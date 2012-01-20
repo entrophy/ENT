@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_DataObject extends RAD_Core_Database_DataObject {
+class ENT_Core_DataObject extends ENT_Core_Database_DataObject {
 
 }
 ?>

@@ -1,8 +1,8 @@
 <?php
-class RAD_Core_Database_DAO {
+class ENT_Core_Database_DAO {
 	protected $database;
 	public function __construct() {
-		$this->database = RAD::app()->getDatabase();
+		$this->database = ENT::app()->getDatabase();
 	}
 	
 	protected static $instances;

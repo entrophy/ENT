@@ -1,5 +1,5 @@
 <?php
-class RAD_Module_Image {
+class ENT_Module_Image {
 	const LOAD_FILE = 'image/load=file';
 	
 	private $type;
@@ -86,7 +86,7 @@ class RAD_Module_Image {
 	}
 	
 	public function copy() {
-		$image = RAD::getModule('image');
+		$image = ENT::getModule('image');
 		$image->setObjectData(get_object_vars($this));
 		return $image;
 	}

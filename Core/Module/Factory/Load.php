@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Module_Factory_Load {
+class ENT_Core_Module_Factory_Load {
 	protected static $cache;
 	protected static $module_key;
 	
@@ -31,7 +31,7 @@ class RAD_Core_Module_Factory_Load {
 			return $cached;
 		} else {
 			if ($object) {
-				$item = RAD::getModule(static::$module_key);
+				$item = ENT::getModule(static::$module_key);
 			}
 			
 			$dao = str_replace("_Load", "", get_called_class()).'_DAO';

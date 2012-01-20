@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Template extends RAD_Core_Template_Abstract {
+class ENT_Core_Template extends ENT_Core_Template_Abstract {
 	private $header;
 	private $content;
 	private $template;

@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Request {
+class ENT_Core_Request {
 	private $section;
 	private $controller;
 	private $action;
@@ -75,7 +75,7 @@ class RAD_Core_Request {
 	}
 	
 	public function getUrl() {
-		return str_replace(RAD::getWebBasePath(), "", $_SERVER['REQUEST_URI']);
+		return str_replace(ENT::getWebBasePath(), "", $_SERVER['REQUEST_URI']);
 	}
 	public function getSection() {
 		return $this->section;

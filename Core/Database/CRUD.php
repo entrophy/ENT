@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_CRUD {
+class ENT_Core_Database_CRUD {
 	public function cou($table, $data, $where) {
 		$result = $this->execute("SELECT * FROM $table WHERE $where");
 		if ($this->getRows($result)) {

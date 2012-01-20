@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Router_Match {
+class ENT_Core_Router_Match {
 
 }
 ?>

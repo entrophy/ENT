@@ -1,5 +1,5 @@
 <?php
-abstract class RAD_Core_Resource_Abstract {
+abstract class ENT_Core_Resource_Abstract {
 	protected $database;
 	protected $result;
 	protected $items;
@@ -10,7 +10,7 @@ abstract class RAD_Core_Resource_Abstract {
 	protected $query;
 	public function __construct($objects = null) {
 		$this->objects = $objects;
-		$this->database = RAD::app()->getDatabase();
+		$this->database = ENT::app()->getDatabase();
 		$this->queryBuilder = $this->database->queryBuilder();
 		$this->init();
 	}

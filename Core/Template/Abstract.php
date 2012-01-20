@@ -1,5 +1,5 @@
 <?php
-abstract class RAD_Core_Template_Abstract {
+abstract class ENT_Core_Template_Abstract {
 	private $basePath;
 	protected $currentPath;
 	protected $file;
@@ -7,7 +7,7 @@ abstract class RAD_Core_Template_Abstract {
 	protected $contentView;
 	public function getBasePath() {
 		if (!$this->basePath) {
-			$config = RAD::app()->getConfig()->getWebConfig();
+			$config = ENT::app()->getConfig()->getWebConfig();
 			$this->basePath = $config['path'];
 		}
 		return $this->basePath;
@@ -26,11 +26,11 @@ abstract class RAD_Core_Template_Abstract {
 	}
 	
 	public function helper($name) {
-		return RAD::getHelper($name);
+		return ENT::getHelper($name);
 	}
 	
 	public function getRequest() {
-		return RAD::app()->getFrontController()->getRequest();
+		return ENT::app()->getFrontController()->getRequest();
 	}
 	
 	public function generateCSSURL($path) {
@@ -81,7 +81,7 @@ abstract class RAD_Core_Template_Abstract {
 	public function __($key) {
 		$args = func_get_args();
 		$args = array_slice($args, 1);
-		$translate = RAD::getSingleton('translate');
+		$translate = ENT::getSingleton('translate');
 		return $translate->getTranslation($key, $args);
 	}
 	
@@ -92,7 +92,7 @@ abstract class RAD_Core_Template_Abstract {
 	}
 	
 	public function langUrl($path) {
-		$site = RAD::registry('site');
+		$site = ENT::registry('site');
 		$path = $this->prepareUrl($path);
 		
 		if ($site) {			
@@ -115,8 +115,8 @@ abstract class RAD_Core_Template_Abstract {
 	}
 	
 	public function getBlock($path, $values = null) {
-		$template = RAD::getViewTemplate($path);
-		if ($view = RAD::getView($path, $template, false)) {			
+		$template = ENT::getViewTemplate($path);
+		if ($view = ENT::getView($path, $template, false)) {			
 			if ($values) {
 				if (!is_array($values)) {
 					$values = array($values);

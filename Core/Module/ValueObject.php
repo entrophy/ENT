@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Module_ValueObject {
+class ENT_Core_Module_ValueObject {
 	public function __set($key, $val) {
 		if (property_exists($this, $key)) {
 			$this->$key = $val;

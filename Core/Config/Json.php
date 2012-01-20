@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Config_Json extends RAD_Core_Config_Abstract {
+class ENT_Core_Config_Json extends ENT_Core_Config_Abstract {
 	public function load($file) {		
 		$json = json_decode(file_get_contents($file));
 		

@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_App {
+class ENT_Core_App {
 	protected $front_controller;
 	protected $config;
 	protected $db;
@@ -11,14 +11,14 @@ class RAD_Core_App {
 	
 	public function getDatabase() {
 		if (!$this->db) {
-			$this->db = new RAD_Core_Database();
+			$this->db = new ENT_Core_Database();
 		}
 		return $this->db;
 	}
 	
 	public function getEnvironment() {
 		if (!$this->environment) {
-			$this->environment = new RAD_Core_Environment($this->getConfig()->getEnvironment());
+			$this->environment = new ENT_Core_Environment($this->getConfig()->getEnvironment());
 		}
 		return $this->environment;
 	}
@@ -29,14 +29,14 @@ class RAD_Core_App {
 	
 	public function getConfig() {
 		if (!$this->config) {
-			$this->config = RAD_Core_Config::load();
+			$this->config = ENT_Core_Config::load();
 		}
 		return $this->config;
 	}
 	
 	public function getFrontController() {
 		if (!$this->front_controller) {
-			$this->front_controller = new RAD_Core_Controller_Front();
+			$this->front_controller = new ENT_Core_Controller_Front();
 		}
 		return $this->front_controller;
 	}

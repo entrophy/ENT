@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database extends RAD_Core_Database_CRUD {
+class ENT_Core_Database extends ENT_Core_Database_CRUD {
 	private $config;
 	private $connection;
 	private $prefix;
@@ -10,13 +10,13 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 	private static $instance;
 	public static function getInstance() {
 		if (!self::$instance) {
-			self::$instance = new RAD_Core_Database();
+			self::$instance = new ENT_Core_Database();
 		}
 		return self::$instance;	
 	}
 	
 	public function __construct() {
-		$this->config = RAD::app()->getConfig()->getDbConfig();
+		$this->config = ENT::app()->getConfig()->getDbConfig();
 		$this->connection = mysql_connect($this->config['host'], $this->config['user'], $this->config['password']);
 		$this->prefix = $this->config['prefix'];
 		
@@ -49,7 +49,7 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 	}
 	
 	public function eav($table, $entityid) {
-		return new RAD_Core_Database_EAV($this->matchTable($table), $entityid, $this);
+		return new ENT_Core_Database_EAV($this->matchTable($table), $entityid, $this);
 	}
 	
 	public function getTotalRows() {
@@ -65,7 +65,7 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 	}
 	
 	public function queryBuilder() {
-		return new RAD_Core_Database_QueryBuilder($this);
+		return new ENT_Core_Database_QueryBuilder($this);
 	}
 	
 	public function matchTable($table) {
@@ -78,7 +78,7 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 	public function returnAsDataObjects($result) {
 		$data = array();
 		while ($dataItem = $this->getArray($result)) {
-			$data[] = new RAD_Core_Database_DataObject($dataItem);
+			$data[] = new ENT_Core_Database_DataObject($dataItem);
 		}
 		return $data;
 	}
@@ -116,14 +116,14 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 	}
 	
 	public function query($query) {
-		RAD_Profiler::startQuery($query);
+		ENT_Profiler::startQuery($query);
 			$result = mysql_query($query, $this->connection);
-		RAD_Profiler::stopQuery();
+		ENT_Profiler::stopQuery();
 		return $result;
 	}
 	
 	public function execute($query, $showQueryOnError = false) {
-		RAD_Profiler::startQuery($query);	
+		ENT_Profiler::startQuery($query);	
 			if ($this->connection) {
 				$result = mysql_query($query, $this->connection);
 			} else {
@@ -142,7 +142,7 @@ class RAD_Core_Database extends RAD_Core_Database_CRUD {
 				$array = mysql_fetch_array($_result);
 				$this->totalRows = $array['rows'];
 			}
-		RAD_Profiler::stopQuery();
+		ENT_Profiler::stopQuery();
 		return $result;
 	}
 }

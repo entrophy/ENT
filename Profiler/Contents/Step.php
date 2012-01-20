@@ -1,5 +1,5 @@
 <?php
-class RAD_Profiler_Contents_Step extends RAD_Profiler_Contents {
+class ENT_Profiler_Contents_Step extends ENT_Profiler_Contents {
 	private $step;
 	public function __construct($file, $step) {
 		$this->file = $file;

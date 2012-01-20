@@ -1,10 +1,10 @@
 <?php
-class RAD_Core_Router {
+class ENT_Core_Router {
 	public function __construct() {
 	
 	}
 	public function match($request) {
-		$config = RAD::app()->getConfig()->getRoutesConfig();
+		$config = ENT::app()->getConfig()->getRoutesConfig();
 
 		$default = $config["default"];
 		$routes = $config["routes"];

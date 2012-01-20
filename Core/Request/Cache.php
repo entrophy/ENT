@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Request_Cache {
+class ENT_Core_Request_Cache {
 	private $params = array();
 	private $options = array('max_age' => 30);
 	private $request;

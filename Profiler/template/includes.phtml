@@ -22,8 +22,8 @@
 					$('#rad-profiler .rad-profiler .summary .steps .step .data .time .sql a').click(function() {
 						var id = $(this).closest('.step').attr('id').split('_').pop();
 						
-						$('#rad-profiler .rad-profiler .details .queries').not('#rad_profiler_step_'+id+'_queries').hide();
-						$('#rad_profiler_step_'+id+'_queries').toggle();
+						$('#rad-profiler .rad-profiler .details .queries').not('#ENT_profiler_step_'+id+'_queries').hide();
+						$('#ENT_profiler_step_'+id+'_queries').toggle();
 						
 						return false;
 					});

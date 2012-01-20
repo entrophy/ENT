@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_QueryBuilder_Condition {
+class ENT_Core_Database_QueryBuilder_Condition {
 	private $sql;
 	private $key;
 	private $weight;
@@ -10,7 +10,7 @@ class RAD_Core_Database_QueryBuilder_Condition {
 			
 			} else {
 				foreach ($params as $field => $value) {
-					$field = RAD_Core_Database::getInstance()->field($field);
+					$field = ENT_Core_Database::getInstance()->field($field);
 					
 					if (is_numeric($value)) {
 						$this->sql = $field." = $value";

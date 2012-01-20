@@ -1,5 +1,5 @@
 <?php
-abstract class RAD_Core_Resource_Smart extends RAD_Core_Resource_Abstract {
+abstract class ENT_Core_Resource_Smart extends ENT_Core_Resource_Abstract {
 	protected $items;
 	protected $className;
 	
@@ -17,7 +17,7 @@ abstract class RAD_Core_Resource_Smart extends RAD_Core_Resource_Abstract {
 	public function fetch() {
 		$result = $this->database->execute($this->getQuery());
 		while ($data = mysql_fetch_array($result)) {
-			$item = RAD::getModule(str_replace("_", "/", $this->className));
+			$item = ENT::getModule(str_replace("_", "/", $this->className));
 			
 			$item->load($data['id']);
 			

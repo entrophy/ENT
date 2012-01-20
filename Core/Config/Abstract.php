@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Config_Abstract {
+class ENT_Core_Config_Abstract {
 	protected $environment = null;
 	protected $config;
 	protected $config_cache;

@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_EAV_Value {
+class ENT_Core_Database_EAV_Value {
 
 }
 ?>

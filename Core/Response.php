@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Response {
+class ENT_Core_Response {
 	private $type = 'html';
 	private $content;
 
@@ -36,7 +36,7 @@ class RAD_Core_Response {
 		return $this->content;
 	}
 	public function send() {
-		$compress = RAD::app()->getConfig()->doCompress();
+		$compress = ENT::app()->getConfig()->doCompress();
 	
 		switch ($this->type) {
 			case 'pdf':

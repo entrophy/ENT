@@ -1,6 +1,6 @@
 <?php
 require_once('Profiler/Step.php');
-class RAD_Profiler {
+class ENT_Profiler {
 	private static $running = false;
 	private static $current_step = null;
 	private static $current_query = null;
@@ -29,7 +29,7 @@ class RAD_Profiler {
 	
 	public static function startStep($name) {
 		if (self::$running) {
-			$step = new RAD_Profiler_Step($name);
+			$step = new ENT_Profiler_Step($name);
 			
 			if (self::$current_step) {
 				self::$current_step->addChild($step);
@@ -55,7 +55,7 @@ class RAD_Profiler {
 	
 	public static function startQuery($sql) {
 		if (self::$running) {
-			$query = new RAD_Profiler_Query($sql);
+			$query = new ENT_Profiler_Query($sql);
 			
 			if (self::$current_step) {
 				self::$current_step->addQuery($query);
@@ -84,7 +84,7 @@ class RAD_Profiler {
 	}
 	public static function getHtmlContent() {
 		if (self::$render) {
-			$view = new RAD_Profiler_Contents('template/contents.phtml');
+			$view = new ENT_Profiler_Contents('template/contents.phtml');
 			return $view->render();
 		}
 	}

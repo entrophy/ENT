@@ -1,5 +1,5 @@
 <?php
-abstract class RAD_Core_Controller_Abstract {
+abstract class ENT_Core_Controller_Abstract {
 	protected $frontController;
 	private $request;
 	private $request_cache;
@@ -26,38 +26,38 @@ abstract class RAD_Core_Controller_Abstract {
 	}
 	
 	public function startSession() {
-		if (!RAD::registry('session_start')) {
+		if (!ENT::registry('session_start')) {
 			session_start();
-			RAD::register('session_start', true);
+			ENT::register('session_start', true);
 		}
 	}
 	
-	public function setFrontController(RAD_Core_Controller_Front $frontController) {
+	public function setFrontController(ENT_Core_Controller_Front $frontController) {
 		$this->frontController = $frontController;
 	}
 	
-	public function setRequest(RAD_Core_Request $request) {
+	public function setRequest(ENT_Core_Request $request) {
 		$this->request = $request;
 	}
 	public function getRequest() {
 		return $this->request;
 	}
 	
-	public function setRequestCache(RAD_Core_Request_Cache $request_cache) {
+	public function setRequestCache(ENT_Core_Request_Cache $request_cache) {
 		$this->request_cache = $request_cache;
 	}
 	public function getRequestCache() {
 		return $this->request_cache;
 	}
 	
-	public function setResponse(RAD_Core_Response $response) {
+	public function setResponse(ENT_Core_Response $response) {
 		$this->response = $response;
 	}
 	public function getResponse() {
 		return $this->response;
 	}
 	
-	public function setHeader(RAD_Core_Template_Header $header) {
+	public function setHeader(ENT_Core_Template_Header $header) {
 		$this->header = $header;
 	}
 	public function getHeader() {
@@ -82,7 +82,7 @@ abstract class RAD_Core_Controller_Abstract {
 		if (substr($path, 0, 1) == '/') {
 			$path = substr_replace($path, '', 0, 1);
 		}
-		$path = RAD::getWebBasePath().$path;
+		$path = ENT::getWebBasePath().$path;
 		return $path;
 	}
 	
@@ -104,14 +104,14 @@ abstract class RAD_Core_Controller_Abstract {
 			return $this->frontController->redirect($path);
 		} else {
 			if (substr($path, 0, 1) != '/' && strpos($path, 'http://') === false) {
-				$path = RAD::getWebBasePath().$path;
+				$path = ENT::getWebBasePath().$path;
 			}
 			header("location: ".$path);
 		}
 	}
 	
 	public function helper($name) {
-		return RAD::getHelper($name);
+		return ENT::getHelper($name);
 	}
 }
 ?>

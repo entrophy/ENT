@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Environment {
+class ENT_Core_Environment {
 	private $data;
 	
 	public function __construct($data) {

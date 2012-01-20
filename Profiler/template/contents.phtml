@@ -20,7 +20,7 @@
 
 					<div class="clear"></div>
 				</div>
-				<?php foreach (RAD_Profiler::getSteps() as $step): ?>
+				<?php foreach (ENT_Profiler::getSteps() as $step): ?>
 					<?php echo $this->displayStep($step); ?>
 				<?php endforeach; ?>
 
@@ -35,7 +35,7 @@
 		</div>
 
 		<div class="details">
-			<?php foreach (RAD_Profiler::getSteps() as $step): ?>
+			<?php foreach (ENT_Profiler::getSteps() as $step): ?>
 				<?php echo $this->displayQuery($step); ?>
 			<?php endforeach; ?>
 		</div>

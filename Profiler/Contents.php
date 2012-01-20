@@ -1,5 +1,5 @@
 <?php
-class RAD_Profiler_Contents {
+class ENT_Profiler_Contents {
 	protected $file;
 	
 	public function __construct($file) {
@@ -8,7 +8,7 @@ class RAD_Profiler_Contents {
 	
 	public function getTotalDuration() {
 		$duration = 0;
-		foreach (RAD_Profiler::getSteps() as $step) {
+		foreach (ENT_Profiler::getSteps() as $step) {
 			$duration += $step->getDuration();
 		}
 		
@@ -16,16 +16,16 @@ class RAD_Profiler_Contents {
 	}
 	
 	public function getFirstStart() {
-		$steps = RAD_Profiler::getSteps();
+		$steps = ENT_Profiler::getSteps();
 		return $steps[0]->getStart();
 	}
 	
 	public function displayStep($step) {
-		$view = new RAD_Profiler_Contents_Step('template/contents/step.phtml', $step);
+		$view = new ENT_Profiler_Contents_Step('template/contents/step.phtml', $step);
 		return $view->render();
 	}
 	public function displayQuery($step) { 
-		$view = new RAD_Profiler_Contents_Query('template/contents/query.phtml', $step);
+		$view = new ENT_Profiler_Contents_Query('template/contents/query.phtml', $step);
 		return $view->render();
 	}
 	

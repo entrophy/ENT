@@ -1,5 +1,5 @@
 <?php
-class RAD_Profiler_Step {
+class ENT_Profiler_Step {
 	private $name;
 	private $parent;
 	private $start = null;
@@ -12,7 +12,7 @@ class RAD_Profiler_Step {
 	public function __construct($name) {
 		$this->name = $name;
 		$this->start = microtime(true);
-		$this->id = RAD_Profiler::generateStepID();
+		$this->id = ENT_Profiler::generateStepID();
 	}
 	
 	public function stop() {

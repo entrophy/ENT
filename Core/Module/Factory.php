@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Module_Factory {
+class ENT_Core_Module_Factory {
 	public static $version = '2.0';
 
 	protected $dao;

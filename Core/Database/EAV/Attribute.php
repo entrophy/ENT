@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_EAV_Attribute {
+class ENT_Core_Database_EAV_Attribute {
 	private $key;
 	private $table;
 	private $entity_id;

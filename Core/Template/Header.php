@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Template_Header {
+class ENT_Core_Template_Header {
 	private $title;
 	private $description;
 	private $keywords;

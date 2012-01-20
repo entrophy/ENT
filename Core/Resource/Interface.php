@@ -1,5 +1,5 @@
 <?php
-interface RAD_Core_Resource_Interface {
+interface ENT_Core_Resource_Interface {
 	public function build();
 }
 ?>

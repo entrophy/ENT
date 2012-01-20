@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_EAV {
+class ENT_Core_Database_EAV {
 	private $table;
 	private $database;
 	private $entityId;
@@ -27,7 +27,7 @@ class RAD_Core_Database_EAV {
 			$result = $builder->execute();
 			
 			while ($data = $this->database->getArray($result)) {
-				$attribute = new RAD_Core_Database_EAV_Attribute($data['key'], $this->table, $this->entityid, $this->database);
+				$attribute = new ENT_Core_Database_EAV_Attribute($data['key'], $this->table, $this->entityid, $this->database);
 				$this->_attributes[] = $attribute;
 				$this->attributes[$key] = $attribute;
 			}
@@ -37,7 +37,7 @@ class RAD_Core_Database_EAV {
 	
 	public function getAttribute($key) {
 		if (!$this->attributes[$key]) {
-			$this->attributes[$key] = new RAD_Core_Database_EAV_Attribute($key, $this->table, $this->entityid, $this->database);
+			$this->attributes[$key] = new ENT_Core_Database_EAV_Attribute($key, $this->table, $this->entityid, $this->database);
 		}
 		return $this->attributes[$key];
 	}

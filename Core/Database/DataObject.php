@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_DataObject {
+class ENT_Core_Database_DataObject {
 	public $data;
 
 	public function __construct(array $_data) {

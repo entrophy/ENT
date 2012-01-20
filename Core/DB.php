@@ -1,10 +1,10 @@
 <?php
-class RAD_Core_DB {
+class ENT_Core_DB {
 	private $config;
 	private $connection;
 	private $prefix;
 	public function __construct() {
-		$this->config = RAD::app()->getConfig()->getDbConfig();
+		$this->config = ENT::app()->getConfig()->getDbConfig();
 		$this->connection = mysql_connect($this->config['host'], $this->config['user'], $this->config['password']);
 		$this->prefix = $this->config['prefix'];
 

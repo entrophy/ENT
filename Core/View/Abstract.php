@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_View_Abstract extends RAD_Core_Template_Abstract {
+class ENT_Core_View_Abstract extends ENT_Core_Template_Abstract {
 	protected $content;
 	protected $rendered = false;
 	protected $template;
@@ -17,7 +17,7 @@ class RAD_Core_View_Abstract extends RAD_Core_Template_Abstract {
 		}
 	}
 	public function render() {
-		$path = str_replace(array(RAD::registry('project_path'), "app/design/template/", ".phtml"), "", $this->template);
+		$path = str_replace(array(ENT::registry('project_path'), "app/design/template/", ".phtml"), "", $this->template);
 		$this->currentPath = $path."/";
 	
 		ob_start();
@@ -92,7 +92,7 @@ class RAD_Core_View_Abstract extends RAD_Core_Template_Abstract {
 		return $this->getContent();
 	}
 	
-	public function setHeader(RAD_Core_Template_Header $header) {
+	public function setHeader(ENT_Core_Template_Header $header) {
 		$this->header = $header;
 	}
 	public function getHeader() {

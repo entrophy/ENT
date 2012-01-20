@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Module_Abstract {
+class ENT_Core_Module_Abstract {
 	const LOAD_DATA = 'load/data';
 	const LOAD_ID = 'load/id';
 	

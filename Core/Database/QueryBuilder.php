@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Database_QueryBuilder {
+class ENT_Core_Database_QueryBuilder {
 	private $query;
 	protected $table;
 	protected $fields = '*';
@@ -69,7 +69,7 @@ class RAD_Core_Database_QueryBuilder {
 	}
 	
 	public function newCondition($params, $key = '', $weight = 0) {
-		return new RAD_Core_Database_QueryBuilder_Condition($params, $key, $weight);
+		return new ENT_Core_Database_QueryBuilder_Condition($params, $key, $weight);
 	}
 	
 	public function removeCondition($param) {

@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_View extends RAD_Core_View_Abstract {
+class ENT_Core_View extends ENT_Core_View_Abstract {
 
 }
 ?>

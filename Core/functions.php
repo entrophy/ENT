@@ -3,14 +3,14 @@
 function array_to_object_array(array $array, $class) {
 	$_array = array();
 	
-	$static = RAD::getStatic($class);
+	$static = ENT::getStatic($class);
 	foreach ($array as $data) {
 		if ($static::$version == '2.0') {
 			$_load = $class.'_Load';
 			
 			$_array[] = $class::load($data, $_load::ID);
 		} else {
-			$_array[] = $object = RAD::getModule($class);	
+			$_array[] = $object = ENT::getModule($class);	
 			$object->load($data, $object::LOAD_ID);
 		}
 	}
@@ -125,8 +125,8 @@ function __autoload($class) {
 		return;
 	}
 
-	if (preg_match('/^RAD_/', $class)) {
-		$includePath = RAD::registry('rad_path');
+	if (preg_match('/^ENT_/', $class)) {
+		$includePath = ENT::registry('ENT_path');
 		$class = explode("_", $class);
 		$class[0] = null;
 		
@@ -151,7 +151,7 @@ function __autoload($class) {
 	} else if (preg_match('/Controller$/', $class)) {
 		$class = str_replace("_", "/", $class);
 		
-		$controller_path = RAD::registry('project_path').'app/code/controllers/'.$class.'.php';
+		$controller_path = ENT::registry('project_path').'app/code/controllers/'.$class.'.php';
 		require $controller_path;
 	} else if (preg_match('/View$/', $class)) {
 		$class = explode("_", $class);
@@ -160,7 +160,7 @@ function __autoload($class) {
 		array_splice($class, $target, 1);
 		$class = implode("/", $class);
 
-		$view_path = RAD::registry('project_path').'app/code/views/'.$class.'.php';
+		$view_path = ENT::registry('project_path').'app/code/views/'.$class.'.php';
 		require $view_path;
 	} else if (preg_match('/^Helper/', $class)) {
 		$class = explode("_", $class);
@@ -169,7 +169,7 @@ function __autoload($class) {
 		$class = implode("_", $class);
 	
 		$class = str_replace("_", "/", $class);
-		require RAD::registry('project_path').'app/code/helpers/'.$class.'.php';
+		require ENT::registry('project_path').'app/code/helpers/'.$class.'.php';
 	} else {
 		$class = explode("_", $class);
 		
@@ -177,19 +177,19 @@ function __autoload($class) {
 		switch ($class[0]) {
 			case 'RAD':
 				$class[0] = null;
-				$includePath = RAD::registry('rad_path');
+				$includePath = ENT::registry('ENT_path');
 				break;
 			case 'jQueryTmpl':
-				$includePath = RAD::registry('lib_path').'/jquery-tmpl-php/';
+				$includePath = ENT::registry('lib_path').'/jquery-tmpl-php/';
 				$debug = true;
 				break;
 			case 'Zend':
-				set_include_path(RAD::registry('zend_path'));
-				$includePath = RAD::registry('zend_path') ? : '';
+				set_include_path(ENT::registry('zend_path'));
+				$includePath = ENT::registry('zend_path') ? : '';
 				break;
 			default:
 				set_include_path('');
-				$includePath = RAD::registry('project_path').'app/code/modules/';
+				$includePath = ENT::registry('project_path').'app/code/modules/';
 				
 		}
 		

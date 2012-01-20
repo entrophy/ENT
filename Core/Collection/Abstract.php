@@ -1,5 +1,5 @@
 <?php
-abstract class RAD_Core_Collection_Abstract extends RAD_Core_Resource_Abstract implements IteratorAggregate, Countable {
+abstract class ENT_Core_Collection_Abstract extends ENT_Core_Resource_Abstract implements IteratorAggregate, Countable {
 	protected $objects = array();
 	protected $key;
 	protected $built = false;
@@ -10,7 +10,7 @@ abstract class RAD_Core_Collection_Abstract extends RAD_Core_Resource_Abstract i
 		if ($this->objects || is_array($objects)) {
 			$this->built = true;
 		}
-		$this->database = RAD::app()->getDatabase();
+		$this->database = ENT::app()->getDatabase();
 		$this->queryBuilder = $this->database->queryBuilder();
 		$this->init();
 	}
@@ -171,7 +171,7 @@ abstract class RAD_Core_Collection_Abstract extends RAD_Core_Resource_Abstract i
 		return false;
 	}
 	public function includes($match_parameter) {
-		if (RAD::isCollection($match_parameter)) {
+		if (ENT::isCollection($match_parameter)) {
 			$match_parameter = $match_parameter->getObjects();
 		}
 		if (is_object($match_parameter) || (is_array($match_parameter) && is_object($match_parameter[0]))) {
@@ -252,7 +252,7 @@ abstract class RAD_Core_Collection_Abstract extends RAD_Core_Resource_Abstract i
 				$items = $this->fetch();
 			}
 
-			$object_static = RAD::getStatic($this->key);
+			$object_static = ENT::getStatic($this->key);
 			if (count($items)) {
 				if ($object_static::$version == '2.0') {
 					$object_load = $object_static.'_Load';
@@ -264,7 +264,7 @@ abstract class RAD_Core_Collection_Abstract extends RAD_Core_Resource_Abstract i
 					}				
 				} else {
 					foreach ($items as $item) {
-						$object = RAD::getModule($this->key);
+						$object = ENT::getModule($this->key);
 						$object->load($item, $object_static::LOAD_DATA);
 
 						$this->objects[] = $object;

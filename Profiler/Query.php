@@ -1,5 +1,5 @@
 <?php
-class RAD_Profiler_Query {
+class ENT_Profiler_Query {
 	private $name;
 	private $step;
 	private $start = null;

@@ -1,9 +1,9 @@
 <?php
-class RAD_Module_Translate {
+class ENT_Module_Translate {
 	private static $instance;
 	public static function getInstance() {
 		if (!self::$instance) {
-			self::$instance = new RAD_Module_Translate();
+			self::$instance = new ENT_Module_Translate();
 		}
 		return self::$instance;
 	}

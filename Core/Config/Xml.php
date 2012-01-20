@@ -1,5 +1,5 @@
 <?php
-class RAD_Core_Config_Xml extends RAD_Core_Config_Abstract {	
+class ENT_Core_Config_Xml extends ENT_Core_Config_Abstract {	
 	public function load($file) {	
 		$config_XML = new SimpleXMLElement(file_get_contents($file));	
 		$db = $config_XML->database;

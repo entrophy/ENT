@@ -1,5 +1,5 @@
 <?php
-class RAD_Module_Cache {
+class ENT_Module_Cache {
 	const TYPE_DATA = 'cache/type=data';
 	const TYPE_PAGE = 'cache/type=page';
 	

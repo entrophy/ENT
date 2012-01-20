@@ -1,11 +1,11 @@
 <?php
-class RAD_Core_Template_XML extends RAD_Core_Template_Abstract implements RAD_Core_Template_Interface {
+class ENT_Core_Template_XML extends ENT_Core_Template_Abstract implements ENT_Core_Template_Interface {
 	private $xml;
 	private $header;
 	private $data;
 	private $views;
 	
-	public function setHeader(RAD_Core_Template_Header $header) {
+	public function setHeader(ENT_Core_Template_Header $header) {
 		$this->header = $header;
 	}
 	public function getHeader() {
@@ -115,7 +115,7 @@ class RAD_Core_Template_XML extends RAD_Core_Template_Abstract implements RAD_Co
 				if ($data['template']) {
 					$viewName = array_shift(explode(".phtml", $data['template']));
 					
-					$view = RAD::getView($viewNamePrefix.$viewName, $path.$data['template'], false);
+					$view = ENT::getView($viewNamePrefix.$viewName, $path.$data['template'], false);
 					
 					
 					/*$viewName = $viewName[0];
@@ -137,9 +137,9 @@ class RAD_Core_Template_XML extends RAD_Core_Template_Abstract implements RAD_Co
 				} else {*/
 				if (!$view) {
 					if ($data['template']) {
-						$view = new RAD_Core_View($path.$data['template'], false);
+						$view = new ENT_Core_View($path.$data['template'], false);
 					} else {
-						$view = new RAD_Core_View(null, false);
+						$view = new ENT_Core_View(null, false);
 					}
 				}
 				
@@ -196,7 +196,7 @@ class RAD_Core_Template_XML extends RAD_Core_Template_Abstract implements RAD_Co
 			$data = $this->processXML($this->xml);
 			
 			$this->data = $data;
-			RAD::register('template_data', $data['data']);
+			ENT::register('template_data', $data['data']);
 		}
 		return $this->data;
 	}

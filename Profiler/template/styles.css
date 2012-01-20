@@ -1,0 +1,139 @@
+#rad-profiler {
+  font-family: Arial, "Arial";
+  font-size: 12px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100; }
+  #rad-profiler span {
+    font-family: Arial, "Arial";
+    font-size: 12px; }
+  #rad-profiler a, #rad-profiler a:hover, #rad-profiler a:visited, #rad-profiler a:link {
+    color: #0066CC;
+    font-family: Arial, "Arial";
+    font-size: 12px; }
+  #rad-profiler a:hover {
+    text-decoration: underline; }
+  #rad-profiler .clear {
+    clear: both;
+    font-size: 0px;
+    line-height: 0px;
+    height: 0px;
+    width: 0px; }
+  #rad-profiler .rad-profiler-button {
+    position: absolute;
+    width: 70px;
+    text-align: center;
+    top: 0;
+    right: 0;
+    background-color: #d8d8d8;
+    border-bottom: 1px solid #888;
+    border-left: 1px solid #888;
+    padding: 5px 10px;
+    font-family: Courier, "Courier";
+    font-weight: bold;
+    cursor: pointer; }
+  #rad-profiler .rad-profiler {
+    display: none;
+    width: 500px;
+    position: absolute;
+    right: 90px;
+    top: 0; }
+    #rad-profiler .rad-profiler .summary {
+      background-color: #fff;
+      border: 1px solid #888;
+      border-top: none;
+      padding: 10px; }
+      #rad-profiler .rad-profiler .summary .header {
+        margin: 0px 0px 5px 0px; }
+      #rad-profiler .rad-profiler .summary .steps {
+        margin: 0px 0px 5px 0px; }
+        #rad-profiler .rad-profiler .summary .steps .head .name {
+          color: #ccc;
+          padding: 2px 5px; }
+        #rad-profiler .rad-profiler .summary .steps .head .time {
+          float: right; }
+          #rad-profiler .rad-profiler .summary .steps .head .time .duration, #rad-profiler .rad-profiler .summary .steps .head .time .start, #rad-profiler .rad-profiler .summary .steps .head .time .query {
+            float: left;
+            text-align: right;
+            width: 100px;
+            padding: 2px 5px;
+            color: #bbb; }
+        #rad-profiler .rad-profiler .summary .steps .step {
+          font-family: Courier, "Courier"; }
+          #rad-profiler .rad-profiler .summary .steps .step .data .name {
+            padding: 2px 5px;
+            color: #000; }
+          #rad-profiler .rad-profiler .summary .steps .step .data .time {
+            float: right; }
+            #rad-profiler .rad-profiler .summary .steps .step .data .time .duration, #rad-profiler .rad-profiler .summary .steps .step .data .time .start, #rad-profiler .rad-profiler .summary .steps .step .data .time .sql, #rad-profiler .rad-profiler .summary .steps .step .data .time .query {
+              float: left;
+              text-align: right;
+              padding: 2px 5px;
+              width: 100px;
+              color: #000; }
+            #rad-profiler .rad-profiler .summary .steps .step .data .time .start span {
+              color: #bbb; }
+            #rad-profiler .rad-profiler .summary .steps .step .data .time .sql {
+              width: 50px;
+              padding-right: 0; }
+            #rad-profiler .rad-profiler .summary .steps .step .data .time .query {
+              width: 45px; }
+          #rad-profiler .rad-profiler .summary .steps .step.trivial .data .name {
+            color: #bbb; }
+          #rad-profiler .rad-profiler .summary .steps .step.trivial .data .time .duration, #rad-profiler .rad-profiler .summary .steps .step.trivial .data .time .start, #rad-profiler .rad-profiler .summary .steps .step.trivial .data .time .query {
+            color: #bbb; }
+        #rad-profiler .rad-profiler .summary .steps .children {
+          padding-left: 15px; }
+      #rad-profiler .rad-profiler .summary .tools a {
+        display: block;
+        float: left;
+        padding: 2px 0px 0px 0px;
+        margin: 0px 16px 0px 0px; }
+    #rad-profiler .rad-profiler .details .queries {
+      display: none;
+      background-color: #F4F8FA;
+      border: 1px solid #888;
+      border-top: none; }
+      #rad-profiler .rad-profiler .details .queries .tools {
+        background-color: #d8d8d8;
+        padding: 5px 10px;
+        border-bottom: 1px solid #888; }
+        #rad-profiler .rad-profiler .details .queries .tools a {
+          display: block;
+          float: left;
+          padding: 2px 0px;
+          margin: 0px 16px 0px 0px; }
+      #rad-profiler .rad-profiler .details .queries .content {
+        overflow-y: scroll;
+        height: 400px; }
+        #rad-profiler .rad-profiler .details .queries .content .query {
+          padding: 10px;
+          border-top: 1px solid #888; }
+          #rad-profiler .rad-profiler .details .queries .content .query .info {
+            float: left;
+            width: 100px;
+            font-family: Courier, "Courier";
+            text-align: right; }
+            #rad-profiler .rad-profiler .details .queries .content .query .info span {
+              color: #bbb;
+              font-family: Courier, "Courier";
+              font-size: 12px; }
+            #rad-profiler .rad-profiler .details .queries .content .query .info a {
+              font-family: Arial, "Arial"; }
+          #rad-profiler .rad-profiler .details .queries .content .query .sql {
+            float: right;
+            width: 340px;
+            padding: 0px 10px 0px 0px;
+            font-family: Courier, "Courier"; }
+            #rad-profiler .rad-profiler .details .queries .content .query .sql .tag {
+              font-weight: bold;
+              color: #AC1EB3;
+              font-family: Arial, "Arial";
+              font-size: 12px; }
+          #rad-profiler .rad-profiler .details .queries .content .query.first {
+            border: none; }
+          #rad-profiler .rad-profiler .details .queries .content .query.trivial .info .toggle {
+            display: none; }
+          #rad-profiler .rad-profiler .details .queries .content .query.trivial .sql {
+            display: none; }

@@ -16,14 +16,13 @@ class ENT_Database extends ENT_Database_CRUD {
 	}
 	
 	public function __construct() {
-		$this->config = ENT::app()->getConfig()->getDbConfig();
-		$this->connection = mysql_connect($this->config['host'], $this->config['user'], $this->config['password']);
-		$this->prefix = $this->config['prefix'];
+		$this->config = ENT::app()->getConfig()->getDatabase();
+		$this->connection = mysql_connect($this->config->host, $this->config->user, $this->config->password);
+		$this->prefix = $this->config->prefix;
 		
 		mysql_set_charset('utf8', $this->connection);
-
-		mysql_select_db($this->config['database'], $this->connection);
-		$this->config = null;
+		mysql_select_db($this->config->database, $this->connection);
+		unset($this->config);
 		
 		if (!self::$instance) {
 			self::$instance = $this;

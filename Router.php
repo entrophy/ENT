@@ -1,16 +1,12 @@
 <?php
 class ENT_Router {
+	public function __construct($file) {
+		$this->load($file);
+	}
 	public static function load($path) {
-		if (file_exists($file = ENT::registry('project_path').'app/etc/routes.json')) {
-			return new ENT_Router_Json($file, $path);
-		} elseif (file_exists($file = ENT::registry('project_path').'app/etc/routes.xml')) {
-			return new ENT_Router_Xml($file, $path);
-		}
+		
 	}
-
-	public function __construct() {
 	
-	}
 	public function match($request) {
 		$config = ENT::app()->getConfig()->getRoutesConfig();
 

@@ -24,15 +24,15 @@ class ENT_Config {
 		return $this->environment;
 	}
 	
-	public function getWebConfig() {
+	public function getWeb() {
 		return $this->config->web;
 	}
 	public function doCompress() {
 		return $this->config->web->compress;
 	}
 	
-	public function getDbConfig() {
-		return $this->config->db;
+	public function getDatabase() {
+		return $this->config->database;
 	}
 	
 	public function getValue($path, $context = null) {

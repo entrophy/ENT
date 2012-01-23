@@ -1,5 +1,5 @@
 <?php
-require ENT::registry('ent_path').'Core/functions.php';
+require ENT::registry('ent_path').'/functions.php';
 
 final class ENT {
 	private static $_app;
@@ -42,7 +42,7 @@ final class ENT {
 	
 	public static function app() {
 		if (!self::$_app) {
-			self::$_app = new ENT_Core_App();		
+			self::$_app = new ENT_App();		
 		}
 		return self::$_app;
 	}
@@ -53,7 +53,7 @@ final class ENT {
 	}
 	
 	public static function isCollection($module) {
-		return (get_class($module) == 'ENT_Core_Collection_Abstract' || preg_match('/_Collection$/i', get_class($module)));
+		return (get_class($module) == 'ENT_Collection_Abstract' || preg_match('/_Collection$/i', get_class($module)));
 	}
 	public static function getCollection($module, $construct = true) {
 		return self::getModule($module.'/collection', $construct);

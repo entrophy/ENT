@@ -50,7 +50,7 @@ final class ENT_Core_Controller_Front {
 			$view_id = $section_name.'/'.$controller_name.'/'.$view_name;
 			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;			
 
-			die($mvc_path.":D");
+			#die($mvc_path.":D");
 			if ($controller = ENT::getController($section_name.'/'.$controller_name)) {
 				$controller->setFrontController($this);
 				$controller->setRequest($request);

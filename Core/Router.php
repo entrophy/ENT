@@ -1,5 +1,13 @@
 <?php
 class ENT_Core_Router {
+	public static function load($path) {
+		if (file_exists($file = ENT::registry('project_path').'app/etc/routes.json')) {
+			return new ENT_Core_Router_Json($file, $path);
+		} elseif (file_exists($file = ENT::registry('project_path').'app/etc/routes.xml')) {
+			return new ENT_Core_Router_Xml($file, $path);
+		}
+	}
+
 	public function __construct() {
 	
 	}

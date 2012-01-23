@@ -29,7 +29,7 @@ class ENT_Core_App {
 	
 	public function getConfig() {
 		if (!$this->config) {
-			$this->config = ENT_Core_Config::load();
+			$this->config = new ENT_Core_Config();
 		}
 		return $this->config;
 	}

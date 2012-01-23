@@ -126,7 +126,7 @@ function __autoload($class) {
 	}
 
 	if (preg_match('/^ENT_/', $class)) {
-		$includePath = ENT::registry('ENT_path');
+		$includePath = ENT::registry('ent_path');
 		$class = explode("_", $class);
 		$class[0] = null;
 		
@@ -175,9 +175,9 @@ function __autoload($class) {
 		
 		
 		switch ($class[0]) {
-			case 'RAD':
+			case 'ENT':
 				$class[0] = null;
-				$includePath = ENT::registry('ENT_path');
+				$includePath = ENT::registry('ent_path');
 				break;
 			case 'jQueryTmpl':
 				$includePath = ENT::registry('lib_path').'/jquery-tmpl-php/';

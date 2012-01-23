@@ -3,7 +3,7 @@ class ENT_Router {
 	public function __construct($file) {
 		$this->load($file);
 	}
-	public static function load($path) {
+	public static function load($file) {
 		
 	}
 	

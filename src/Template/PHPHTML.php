@@ -1,5 +1,5 @@
 <?php
-class ENT_Template_PHPHTML extends ENT_Template_Abstract implements ENT_Template_Interface {
+class ENT_Template_PHPHTML extends ENT_Template_Abstract {
 	public function render() {
 		ob_start();
 		include_once $this->file;

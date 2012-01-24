@@ -47,11 +47,6 @@ final class ENT {
 		return self::$_app;
 	}
 	
-	
-	public static function getResource($module, $construct = true) {
-		return self::getModule($module.'/resource', $construct);
-	}
-	
 	public static function isCollection($module) {
 		return (get_class($module) == 'ENT_Collection_Abstract' || preg_match('/_Collection$/i', get_class($module)));
 	}

@@ -9,18 +9,43 @@ class ENT_Router {
 	}
 	public function load($file) {
 		$json = json_decode(file_get_contents($file));
-		
 		$this->_default = $json->default;
 		$this->routes = $json->routes;
 		$this->rewrites = $json->rewrites;
 	}
 	
+	public function getDefault() {
+		return $this->_default;
+	}
+	
 	public function rewrite($path) {
 		$response = false;
-		if (count($this->rewrites)) {
+		
+		if (count($this->rewrites)) {			
 			foreach ($this->rewrites as $match => $rewrite) {
 				if ($match === $path) {
 					$response = $rewrite;
+				} else {			
+					if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {
+						$tags = $tags[1];
+						$regex = '^'.preg_replace('/\:(.+?)(?:\/|$)/ism', '([^\/]+?)(?:\/|$)', str_replace('\:', ':', preg_quote($match, '/'))).'$';
+					
+						if (preg_match('/'.$regex.'/ism', $path, $matches) !== 0) {
+							$values = array_slice($matches, 1);
+							$response = $rewrite;
+							$matched = $regex;
+						
+							if (count($tags)) {
+								foreach ($tags as $index => $tag) {
+									if (strpos($response, ':'.$tag) === false) {
+										$response .= '/'.$tag.'/'.$values[$index];
+									} else {
+										$response = str_replace(':'.$tag, $values[$index], $response);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -29,62 +54,24 @@ class ENT_Router {
 	}
 	
 	public function match($request) {
-		if (!$request->isFull()) {
-			$path = '/'.$request->getUrl();
-			
-			if ($rewrite = $this->rewrite($path)) {
+		if ($request->getPath() != $this->_default) {
+			if ($rewrite = $this->rewrite('/'.$request->getBaseUrl())) {
+				$request->addDebug('router-rw from: '.$request->getBaseUrl().' to: '.$rewrite);
 				$request->init($rewrite);
 			}
-		}
-		if (!$request->getPath()) {
-			$request->init($this->_default);
+
+			if (!$request->getPath()) {
+				$request->init($this->_default);
+			}
 		}
 		
-		#print_r($request);
-		$default = $config["default"];
-		$routes = $config["routes"];
-	
 		$section = $request->getSection();
+		$controller = $request->getController();
+		$action = $view = $template = $request->getAction();
 		
-		$cache = false;
+		print_r($this->routes);
 		
-		$controllerRoute = $routes->$section;
-
-		if ($request->getController()) {
-			$controller = $request->getController();
-		} elseif ($controllerRoute->default->controller) {
-			$controller = $controllerRoute->default->controller;
-		} else {
-			$controller = $default['controller'];
-		}
-		
-		$actionRoute = $controllerRoute->$controller;
-		
-		if ($request->getAction()) {
-			$action = $request->getAction();
-		} elseif ($controllerRoute->default->action) {
-			$action = $controllerRoute->default->action;
-		} else {
-			$action = $default['action'];
-		}
-		
-		$_action = $action;
-		if (preg_match('/^([0-9]+)/ism', $_action)) {
-			$_action = "_".$_action;
-		}
-		
-		$mvc_path = $section.'/'.$controller.'/'.$action;
-		$traversable_path = str_replace("_", "/", $mvc_path);
-
-		$layout = $this->traverse($traversable_path, 'layout', $routes);
-		if (!$layout) {
-			$layout = $default['layout'];
-		}
-		
-		$view = $action;
-		$template = $action;
-		
-		return array(
+		return (object) array(
 			"section" => $section, 
 			"controller" => $controller, 
 			"action" => $action, 

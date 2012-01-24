@@ -3,7 +3,8 @@ import os;
 import shutil;
 
 ignore = ['.', '..', '.git', 'README.md'];
-root = os.environ['OLDPWD'].replace('/tools', '');
+
+root = os.path.abspath(os.path.realpath(__file__)).replace('/tools/build', '');
 lib = os.path.join(root, 'lib', '');
 vendors = os.listdir(lib);
 

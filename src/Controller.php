@@ -34,10 +34,12 @@ abstract class ENT_Controller {
 	
 	public function setFrontController(ENT_Controller_Front $frontController) {
 		$this->frontController = $frontController;
+		return $this;
 	}
 	
 	public function setRequest(ENT_Request $request) {
 		$this->request = $request;
+		return $this;
 	}
 	public function getRequest() {
 		return $this->request;
@@ -45,6 +47,7 @@ abstract class ENT_Controller {
 	
 	public function setRequestCache(ENT_Request_Cache $request_cache) {
 		$this->request_cache = $request_cache;
+		return $this;
 	}
 	public function getRequestCache() {
 		return $this->request_cache;
@@ -52,6 +55,7 @@ abstract class ENT_Controller {
 	
 	public function setResponse(ENT_Response $response) {
 		$this->response = $response;
+		return $this;
 	}
 	public function getResponse() {
 		return $this->response;
@@ -59,6 +63,7 @@ abstract class ENT_Controller {
 	
 	public function setHeader(ENT_Template_Header $header) {
 		$this->header = $header;
+		return $this;
 	}
 	public function getHeader() {
 		return $this->header;
@@ -66,6 +71,7 @@ abstract class ENT_Controller {
 	
 	public function setLayoutObject($layout) {
 		$this->layout = $layout;
+		return $this;
 	}
 	public function getLayoutObject() {
 		return $this->layout;
@@ -88,13 +94,16 @@ abstract class ENT_Controller {
 	
 	public function renderLayout($render) {
 		$this->frontController->renderLayout($render);
+		return $this;
 	}
 	public function renderView($render) {
 		$this->frontController->renderLayout($render);
 		$this->frontController->renderView($render);
+		return $this;
 	}
 	public function renderViewLater($render) {
 		$this->frontController->renderViewLater($render);
+		return $this;
 	}
 
 	public function redirect($path, $hard = false) {

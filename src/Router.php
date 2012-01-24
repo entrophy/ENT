@@ -65,48 +65,11 @@ class ENT_Router {
 			}
 		}
 		
-		$default = $config["default"];
-		$routes = $config["routes"];
-	
 		$section = $request->getSection();
+		$controller = $request->getController();
+		$action = $view = $template = $request->getAction();
 		
-		$cache = false;
-		
-		$controllerRoute = $routes->$section;
-
-		if ($request->getController()) {
-			$controller = $request->getController();
-		} elseif ($controllerRoute->default->controller) {
-			$controller = $controllerRoute->default->controller;
-		} else {
-			$controller = $default['controller'];
-		}
-		
-		$actionRoute = $controllerRoute->$controller;
-		
-		if ($request->getAction()) {
-			$action = $request->getAction();
-		} elseif ($controllerRoute->default->action) {
-			$action = $controllerRoute->default->action;
-		} else {
-			$action = $default['action'];
-		}
-		
-		$_action = $action;
-		if (preg_match('/^([0-9]+)/ism', $_action)) {
-			$_action = "_".$_action;
-		}
-		
-		$mvc_path = $section.'/'.$controller.'/'.$action;
-		$traversable_path = str_replace("_", "/", $mvc_path);
-
-		$layout = $this->traverse($traversable_path, 'layout', $routes);
-		if (!$layout) {
-			$layout = $default['layout'];
-		}
-		
-		$view = $action;
-		$template = $action;
+		print_r($this->routes);
 		
 		return (object) array(
 			"section" => $section, 

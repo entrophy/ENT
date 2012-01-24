@@ -41,6 +41,8 @@ final class ENT_Controller_Front {
 			
 			$match = $this->router->match($request);
 			$header = new ENT_Template_Header();
+			
+			print_r($match);
 		
 			$this->layout = $this->_layout = $match->layout;
 			$section_name = $match->section;
@@ -50,8 +52,7 @@ final class ENT_Controller_Front {
 			$view_name = $match->view;
 			$view_id = $section_name.'/'.$controller_name.'/'.$view_name;
 			
-			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;		
-			
+			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;			
 
 			if ($controller = ENT::getController($match->section.'/'.$match->controller)) {
 				$controller->setFrontController($this)

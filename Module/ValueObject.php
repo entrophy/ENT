@@ -8,7 +8,7 @@ class ENT_Module_ValueObject {
 		}
 	}
 	
-	public function __desturct() {
+	public function __destruct() {
 		foreach (array_keys(get_object_vars($this)) as $key) {
 			unset($this->$key);
 		}

@@ -5,6 +5,7 @@ class ENT_Request {
 	private $action;
 	private $params;
 	private $path;
+	
 	public function __construct() {
 		if (strpos($_SERVER['REQUEST_URI'], '?') !== FALSE) {
 			$query = explode("?", $_SERVER['REQUEST_URI']);

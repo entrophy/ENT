@@ -1,0 +1,5 @@
+<?php
+class {{section}}_{{class_path}}_Controller extends ENT_Controller {
+	{{actions}}
+}
+?>

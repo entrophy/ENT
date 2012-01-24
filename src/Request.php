@@ -7,8 +7,15 @@ class ENT_Request {
 	private $path;
 	private $previous;
 	private $full = false;
+	private $debug = array();
 	
-	public function __construct() {
+	public function addDebug($value) {
+		array_push($this->debug, $value);
+	}
+	
+	public function __construct($init = true) {
+		$this->addDebug('construct');
+	
 		if (strpos($_SERVER['REQUEST_URI'], '?') !== FALSE) {
 			$query = explode("?", $_SERVER['REQUEST_URI']);
 			$query = array_splice($query, 1);
@@ -25,16 +32,9 @@ class ENT_Request {
 			foreach ($_GET as $key => $value) {
 				switch ($key) {
 					case 'path':
-						$this->init($value);
-						break;
-					case 'section':
-						$this->section = $value;
-						break;
-					case 'controller':
-						$this->controller = $value;
-						break;
-					case 'action':
-						$this->action = $value;
+						if ($init) {
+							$this->init($value);
+						}
 						break;
 					default:
 						$this->params[$key] = $value;
@@ -45,6 +45,8 @@ class ENT_Request {
 	}
 	
 	public function init($path, $request = null) {
+		$this->addDebug('init: '.$path);
+	
 		$this->path = $path;
 		$this->previous = $request;
 	
@@ -84,6 +86,11 @@ class ENT_Request {
 	public function getUrl() {
 		return str_replace(ENT::getWebBasePath(), "", $_SERVER['REQUEST_URI']);
 	}
+	public function getBaseUrl() {
+		$url = array_slice(explode("?", $this->getUrl()), 0, 1);
+		return $url[0];
+	}
+	
 	public function getPath() {
 		return $this->path;
 	}

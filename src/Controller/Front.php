@@ -21,9 +21,9 @@ final class ENT_Controller_Front {
 	public function redirect($path) {
 		$this->redirect = true;
 
-		$redirectRequest = new ENT_Request();
-		$redirectRequest->init($path);
-		$this->dispatch($redirectRequest);
+		$request = $this->request;
+		$request->init($path);
+		$this->dispatch($request);
 	}
 	
 	public function getRequest() {
@@ -36,28 +36,30 @@ final class ENT_Controller_Front {
 	
 	public function dispatch($_request = false) {
 		Entrophy_Profiler::startStep('root');
-			$request = $_request ?  : $this->request;
+			$request = $_request ? : $this->request;
 			$request_cache = new ENT_Request_Cache($request);
+			
 			$match = $this->router->match($request);
 			$header = new ENT_Template_Header();
 		
-			$this->layout = $match['layout'];
-			$this->_layout = $match['layout'];
-			$section_name = $match['section'];
+			$this->layout = $this->_layout = $match->layout;
+			$section_name = $match->section;
 
-			$controller_name = str_replace("_", "/", $match['controller']);
-			$action_name = $match['action'];
-			$view_name = $match['view'];
+			$controller_name = str_replace("_", "/", $match->controller);
+			$action_name = $match->action;
+			$view_name = $match->view;
 			$view_id = $section_name.'/'.$controller_name.'/'.$view_name;
-			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;			
+			
+			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;		
+			
 
-			if ($controller = ENT::getController($section_name.'/'.$controller_name)) {
-				$controller->setFrontController($this);
-				$controller->setRequest($request);
-				$controller->setRequestCache($request_cache);
-				$controller->setResponse($this->response);
-				$controller->setHeader($header);
-				$controller->init();
+			if ($controller = ENT::getController($match->section.'/'.$match->controller)) {
+				$controller->setFrontController($this)
+							  ->setRequest($request)
+							  ->setRequestCache($request_cache)
+							  ->setResponse($this->response)
+							  ->setHeader($header)
+							  ->init();
 			
 				Entrophy_Profiler::startStep('beforeAction');
 					$controller->_beforeAction();
@@ -73,7 +75,7 @@ final class ENT_Controller_Front {
 						$controller->setLayoutObject($this->template);
 						$controller->_afterTemplateAction();
 				
-						$action = $match['action']."Action";
+						$action = $match->action."Action";
 				
 						if (preg_match('/^([0-9]+)/ism', $action)) {
 							$action = "_".$action;
@@ -147,8 +149,12 @@ final class ENT_Controller_Front {
 				
 				$this->response->send();
 			}
-		} else {
-			$this->redirect('/');
+		} else {			
+			if ($this->router->getDefault() && $this->router->getDefault() != $request->getPath()) {
+				$this->redirect($this->router->getDefault());
+			} else {		
+				echo "unable to load controller: ".$section_name.'/'.$controller_name."<br />\n";
+			}
 		}
 	}
 	

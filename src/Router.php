@@ -14,6 +14,10 @@ class ENT_Router {
 		$this->rewrites = $json->rewrites;
 	}
 	
+	public function getDefault() {
+		return $this->_default;
+	}
+	
 	public function rewrite($path) {
 		$response = false;
 		
@@ -50,14 +54,15 @@ class ENT_Router {
 	}
 	
 	public function match($request) {
-		$path = '/'.$request->getUrl();
-	
-		if ($rewrite = $this->rewrite('/'.$request->getUrl())) {
-			$request->init($rewrite);
-		}
-		
-		if (!$request->getPath()) {
-			$request->init($this->_default);
+		if ($request->getPath() != $this->_default) {
+			if ($rewrite = $this->rewrite('/'.$request->getBaseUrl())) {
+				$request->addDebug('router-rw from: '.$request->getBaseUrl().' to: '.$rewrite);
+				$request->init($rewrite);
+			}
+
+			if (!$request->getPath()) {
+				$request->init($this->_default);
+			}
 		}
 		
 		$default = $config["default"];
@@ -103,7 +108,7 @@ class ENT_Router {
 		$view = $action;
 		$template = $action;
 		
-		return array(
+		return (object) array(
 			"section" => $section, 
 			"controller" => $controller, 
 			"action" => $action, 

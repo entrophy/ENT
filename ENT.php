@@ -21,7 +21,6 @@ final class ENT {
 		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
 			ENT::getLibrary('entrophy/profiler');
 			Entrophy_Profiler::start();
-			die(":D");
 		}
 		self::app()->getFrontController()->dispatch();
 		return $this;
@@ -121,7 +120,12 @@ final class ENT {
 	}
 	
 	public static function getLibrary($library) {
-		print_r(self::resolveClass($library));
+		list($name, $path) = self::resolveClass($library);
+		
+		$path = ENT::registry('ent_path').'lib/'.$path.'.php';
+		if (!class_exists($name, false)) {
+			require $path;
+		}
 	}
 	
 	public static function getController($controller, $construct = true) {

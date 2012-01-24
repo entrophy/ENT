@@ -120,6 +120,16 @@ function createFolder($path) {
 	}
 }
 
+function ENT_Autoload($class) {
+	if (strpos($class, 'ENT_') === 0) {
+		if (class_exists($class, false) || interface_exists($class, false)) {
+			return;
+		}
+		
+		require ENT::registry('ent_path').'src/'.str_replace(array('ENT_', '_'), array('', '/'), $class).'.php';
+	}
+}
+spl_autoload_register('ENT_Autoload');
 function __autoload($class) {
 	if (class_exists($class, false) || interface_exists($class, false)) {
 		return;

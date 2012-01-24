@@ -9,7 +9,6 @@ class ENT_Router {
 	}
 	public function load($file) {
 		$json = json_decode(file_get_contents($file));
-		
 		$this->_default = $json->default;
 		$this->routes = $json->routes;
 		$this->rewrites = $json->rewrites;
@@ -17,10 +16,32 @@ class ENT_Router {
 	
 	public function rewrite($path) {
 		$response = false;
-		if (count($this->rewrites)) {
+		
+		if (count($this->rewrites)) {			
 			foreach ($this->rewrites as $match => $rewrite) {
 				if ($match === $path) {
 					$response = $rewrite;
+				} else {			
+					if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {
+						$tags = $tags[1];
+						$regex = '^'.preg_replace('/\:(.+?)(?:\/|$)/ism', '([^\/]+?)(?:\/|$)', str_replace('\:', ':', preg_quote($match, '/'))).'$';
+					
+						if (preg_match('/'.$regex.'/ism', $path, $matches) !== 0) {
+							$values = array_slice($matches, 1);
+							$response = $rewrite;
+							$matched = $regex;
+						
+							if (count($tags)) {
+								foreach ($tags as $index => $tag) {
+									if (strpos($response, ':'.$tag) === false) {
+										$response .= '/'.$tag.'/'.$values[$index];
+									} else {
+										$response = str_replace(':'.$tag, $values[$index], $response);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -29,18 +50,16 @@ class ENT_Router {
 	}
 	
 	public function match($request) {
-		if (!$request->isFull()) {
-			$path = '/'.$request->getUrl();
-			
-			if ($rewrite = $this->rewrite($path)) {
-				$request->init($rewrite);
-			}
+		$path = '/'.$request->getUrl();
+	
+		if ($rewrite = $this->rewrite('/'.$request->getUrl())) {
+			$request->init($rewrite);
 		}
+		
 		if (!$request->getPath()) {
 			$request->init($this->_default);
 		}
 		
-		#print_r($request);
 		$default = $config["default"];
 		$routes = $config["routes"];
 	

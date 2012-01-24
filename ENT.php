@@ -8,6 +8,7 @@ final class ENT {
 	private static $_basePath;
 	public static function register($key, $value) {
 		self::$_registry[$key] = $value;
+		return $this;
 	}
 	public static function registry($key) {
 		return self::$_registry[$key];
@@ -18,10 +19,12 @@ final class ENT {
 	
 	public static function run() {
 		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
+			ENT::getLibrary('entrophy/profiler');
 			Entrophy_Profiler::start();
 			die(":D");
 		}
 		self::app()->getFrontController()->dispatch();
+		return $this;
 	}
 	
 	public function getWebBasePath() {
@@ -33,15 +36,16 @@ final class ENT {
 	}
 	
 	public static function getConfig() {
-		self::app()->getConfig();
+		return self::app()->getConfig();
 	}
 	
 	public static function getEnvironment() {
-		self::app()->getEnvironment();
+		return self::app()->getEnvironment();
 	}
 	
 	public static function setEnvironment($environment) {
 		self::app()->setEnvironment($environment);
+		return $this;
 	}
 	
 	public static function app() {
@@ -59,18 +63,15 @@ final class ENT {
 	}
 	
 	public static function getHelper($helper) {
-		$helperName = str_replace("/", " ", $helper);
-		$helperName = ucwords($helperName);
+		list($name, $path) = self::resolveClass($helper);
+
+		$name = "Helper_".$name;	
+		$path = ENT::registry('project_path').'app/code/helpers/'.$path.'.php';
 		
-		$helperPath = str_replace(" ", "/", $helperName);
-		$helperName = "Helper_".str_replace(" ", "_", $helperName);
-		
-		$helperPath = ENT::registry('project_path').'app/code/helpers/'.$helperPath.'.php';
-		
-		if (!class_exists($helperName)) {
-			require $helperPath;
+		if (!class_exists($name)) {
+			require $path;
 		}
-		return new $helperName;
+		return new $name;
 	}
 	
 	public static function getSingleton($module) {
@@ -86,23 +87,32 @@ final class ENT {
 		return ENT::registry('project_path').'app/design/template/'.$template.'.phtml';
 	}
 	
-	public static function getView($view, $template, $render = true) {
-		$view_name = str_replace(array("/", "_"), " ", trim($view));
-		$view_name = ucwords($view_name);
-		$view_name = str_replace(array(" ", "-"), array("_", " "), $view_name);
-		$view_name = ucwords($view_name);
-		$view_name = str_replace(" ", "", $view_name);
-	
-		$view_path = str_replace("_", "/", $view_name);
-		$view_path = ENT::registry('project_path').'app/code/views/'.$view_path.'.php';
-		$view_name = $view_name.'_View';
+	public static function resolveClass($path) {
+		$class_name = str_replace(array("/", "_"), " ", trim($path));
+		$class_name = ucwords($class_name);
+		
+		$class_name = str_replace(array(" ", "-"), array("_", " "), $class_name);
+		$class_name = ucwords($class_name);
+		$class_name = str_replace(" ", "", $class_name);
 
-		if (class_exists($view_name, false)) {
-			$view = $view_name;
+		$class_path = str_replace("_", "/", $class_name);
+		#$class_name = str_replace(" ", "_", $class_name);
+		
+		return array($class_name, $class_path);
+	}
+	
+	public static function getView($view, $template, $render = true) {
+		list($name, $path) = self::resolveClass($view);
+
+		$path = ENT::registry('project_path').'app/code/views/'.$path.'.php';
+		$name = $name.'_View';
+
+		if (class_exists($name, false)) {
+			$view = $name;
 		}
-		elseif (is_file($view_path)) {
-			require $view_path;
-			$view = $view_name;
+		elseif (is_file($path)) {
+			require $path;
+			$view = $name;
 		} else {
 			return false;
 		}
@@ -110,22 +120,22 @@ final class ENT {
 		return new $view($template, $render);
 	}
 	
-	public static function getController($controller, $construct = true) {
-		$controller_name = str_replace(array("/", "_"), " ", trim($controller));
-		$controller_name = ucwords($controller_name);
-
-		$controller_path = str_replace(" ", "/", $controller_name);
-		$controller_name = str_replace(" ", "_", $controller_name);
+	public static function getLibrary($library) {
+		print_r(self::resolveClass($library));
+	}
 	
-		$controller_path = ENT::registry('project_path').'app/code/controllers/'.$controller_path.'Controller.php';
-		$controller_name = $controller_name.'Controller';
+	public static function getController($controller, $construct = true) {
+		list($name, $path) = self::resolveClass($controller);
+	
+		$controller_path = ENT::registry('project_path').'app/code/controllers/'.$path.'Controller.php';
+		$name = $name.'Controller';
 		
-		if (class_exists($controller_name, false)) {
-			$controller = $controller_name;
+		if (class_exists($name, false)) {
+			$controller = $name;
 		}
-		elseif (is_file($controller_path)) {
-			require $controller_path;
-			$controller = $controller_name;
+		elseif (is_file($path)) {
+			require $path;
+			$controller = $name;
 		} else {
 			return false;
 		}
@@ -137,30 +147,26 @@ final class ENT {
 	}
 	
 	public static function getModule($module, $construct = true) {
-		$moduleName = str_replace("/", " ", $module);
-		$moduleName = ucwords($moduleName);
-		
-		$modulePath = str_replace(" ", "/", $moduleName);
-		$moduleName = str_replace(" ", "_", $moduleName);
+		list($name, $path) = self::resolveClass($module);
 
-		$moduleLocalPathFull = ENT::registry('project_path').'app/code/modules/'.$modulePath.'.php';
+		$localPath = ENT::registry('project_path').'app/code/modules/'.$path.'.php';
 		
-		if (class_exists($moduleName, false)) {
-			$module = $moduleName;
+		if (class_exists($name, false)) {
+			$module = $name;
 		}
-		elseif (class_exists('ENT_Module_'.$moduleName, false)) {
-			$module = 'ENT_Module_'.$moduleName;
+		elseif (class_exists('ENT_Module_'.$name, false)) {
+			$module = 'ENT_Module_'.$name;
 		}
-		elseif (is_file($moduleLocalPathFull)) {
-			require $moduleLocalPathFull;
-			$module = $moduleName;
+		elseif (is_file($localPath)) {
+			require $localPath;
+			$module = $name;
 		}
-		elseif (is_file(ENT::registry('ENT_path').'/Module/'.$modulePath.'.php')) {
-			require ENT::registry('ENT_path').'/Module/'.$modulePath.'.php';
-			$module = 'ENT_Module_'.$moduleName;	
+		elseif (is_file(ENT::registry('ENT_path').'src/Module/'.$path.'.php')) {
+			require ENT::registry('ENT_path').'src/Module/'.$path.'.php';
+			$module = 'ENT_Module_'.$name;	
 		} 
 		else {	
-			echo "unable to load module: ".$moduleName;
+			echo "unable to load module: ".$name;
 			return false;
 		}
 		

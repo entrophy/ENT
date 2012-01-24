@@ -126,7 +126,7 @@ function __autoload($class) {
 	}
 
 	if (preg_match('/^ENT_/', $class)) {
-		$includePath = ENT::registry('ent_path');
+		$includePath = ENT::registry('ent_path').'src/';
 		$class = explode("_", $class);
 		$class[0] = null;
 		

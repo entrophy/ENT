@@ -17,6 +17,10 @@ final class ENT {
 	}
 	
 	public static function run() {
+		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
+			Entrophy_Profiler::start();
+			die(":D");
+		}
 		self::app()->getFrontController()->dispatch();
 	}
 	

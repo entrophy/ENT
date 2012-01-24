@@ -28,8 +28,7 @@ final class ENT {
 	
 	public function getWebBasePath() {
 		if (!$this->_basePath) {
-			$config = self::app()->getConfig()->getWebConfig();
-			$this->_basePath = $config['path'];
+			$this->_basePath = self::app()->getConfig()->getWeb()->path;
 		}
 		return $this->_basePath;
 	}
@@ -131,8 +130,9 @@ final class ENT {
 	public static function getController($controller, $construct = true) {
 		list($name, $path) = self::resolveClass($controller);
 	
-		$controller_path = ENT::registry('project_path').'app/code/controllers/'.$path.'Controller.php';
+		$path = ENT::registry('project_path').'app/code/controllers/'.$path.'Controller.php';
 		$name = $name.'Controller';
+		
 		
 		if (class_exists($name, false)) {
 			$controller = $name;

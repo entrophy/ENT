@@ -5,7 +5,7 @@ abstract class ENT_Controller {
 	private $request_cache;
 	private $response;
 	private $header;
-	private $template;
+	private $layout;
 	
 	public function init() {
 	
@@ -64,15 +64,15 @@ abstract class ENT_Controller {
 		return $this->header;
 	}
 	
-	public function setTemplateObject($template) {
-		$this->template = $template;
+	public function setLayoutObject($layout) {
+		$this->layout = $layout;
 	}
-	public function getTemplateObject() {
-		return $this->template;
+	public function getLayoutObject() {
+		return $this->layout;
 	}
 	
-	public function setTemplate($layout) {
-		$this->frontController->setTemplate($layout);
+	public function setLayout($layout) {
+		$this->frontController->setLayout($layout);
 	}
 	public function getTemplate() {
 		return $this->frontController->getTemplate();
@@ -86,11 +86,11 @@ abstract class ENT_Controller {
 		return $path;
 	}
 	
-	public function renderTemplate($render) {
-		$this->frontController->renderTemplate($render);
+	public function renderLayout($render) {
+		$this->frontController->renderLayout($render);
 	}
 	public function renderView($render) {
-		$this->frontController->renderTemplate($render);
+		$this->frontController->renderLayout($render);
 		$this->frontController->renderView($render);
 	}
 	public function renderViewLater($render) {

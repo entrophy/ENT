@@ -5,6 +5,8 @@ class ENT_Request {
 	private $action;
 	private $params;
 	private $path;
+	private $previous;
+	private $full = false;
 	
 	public function __construct() {
 		if (strpos($_SERVER['REQUEST_URI'], '?') !== FALSE) {
@@ -23,7 +25,7 @@ class ENT_Request {
 			foreach ($_GET as $key => $value) {
 				switch ($key) {
 					case 'path':
-						$this->reconfig($value);
+						$this->init($value);
 						break;
 					case 'section':
 						$this->section = $value;
@@ -42,8 +44,9 @@ class ENT_Request {
 		}
 	}
 	
-	public function reConfig($path) {
+	public function init($path, $request = null) {
 		$this->path = $path;
+		$this->previous = $request;
 	
 		$x = 1;
 		$path = explode("/", $path);
@@ -72,11 +75,20 @@ class ENT_Request {
 					break;
 			}				
 			$x++;
-		}	
+		}
+		
+		$this->full = (count(array_filter(array($this->section, $this->controller, $this->action))) === 3);
+		$this->path = implode('/', array_filter(array($this->section, $this->controller, $this->action)));
 	}
 	
 	public function getUrl() {
 		return str_replace(ENT::getWebBasePath(), "", $_SERVER['REQUEST_URI']);
+	}
+	public function getPath() {
+		return $this->path;
+	}
+	public function isFull() {
+		return $this->full;
 	}
 	public function getSection() {
 		return $this->section;
@@ -86,6 +98,9 @@ class ENT_Request {
 	}
 	public function getAction() {
 		return $this->action;
+	}
+	public function getPrevious() {
+		return $this->previous;
 	}
 	
 	public function getType() {

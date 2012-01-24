@@ -1,19 +1,50 @@
 <?php
 class ENT_Router {
+	private $_default;
+	private $routes;
+	private $rewrites;
+	
 	public function __construct($file) {
 		$this->load($file);
 	}
-	public static function load($file) {
+	public function load($file) {
+		$json = json_decode(file_get_contents($file));
 		
+		$this->_default = $json->default;
+		$this->routes = $json->routes;
+		$this->rewrites = $json->rewrites;
+	}
+	
+	public function rewrite($path) {
+		$response = false;
+		if (count($this->rewrites)) {
+			foreach ($this->rewrites as $match => $rewrite) {
+				if ($match === $path) {
+					$response = $rewrite;
+				}
+			}
+		}
+
+		return $response;
 	}
 	
 	public function match($request) {
-		$config = ENT::app()->getConfig()->getRoutesConfig();
-
+		if (!$request->isFull()) {
+			$path = '/'.$request->getUrl();
+			
+			if ($rewrite = $this->rewrite($path)) {
+				$request->init($rewrite);
+			}
+		}
+		if (!$request->getPath()) {
+			$request->init($this->_default);
+		}
+		
+		#print_r($request);
 		$default = $config["default"];
 		$routes = $config["routes"];
 	
-		$section = $request->getSection() ? $request->getSection() : $default['section'];
+		$section = $request->getSection();
 		
 		$cache = false;
 		
@@ -53,7 +84,15 @@ class ENT_Router {
 		$view = $action;
 		$template = $action;
 		
-		return array("section" => $section, "controller" => $controller, "action" => $action, "layout" => (string)$layout, "view" => $view, "template" => $template, "cache" => $cache);
+		return array(
+			"section" => $section, 
+			"controller" => $controller, 
+			"action" => $action, 
+			"layout" => (string)$layout, 
+			"view" => $view, 
+			"template" => $template, 
+			"cache" => $cache
+		);
 	}
 	
 	public function traverse($path, $item, $object) {

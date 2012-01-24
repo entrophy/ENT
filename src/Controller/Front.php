@@ -5,7 +5,7 @@ final class ENT_Controller_Front {
 	private $template;
 	private $response;
 	private $templateHeader;
-	private $renderTemplate = true;
+	private $renderLayout = true;
 	private $renderView = true;
 	private $renderViewLater = false;
 	private $redirect = false;
@@ -20,8 +20,9 @@ final class ENT_Controller_Front {
 	
 	public function redirect($path) {
 		$this->redirect = true;
+
 		$redirectRequest = new ENT_Request();
-		$redirectRequest->reconfig($path);
+		$redirectRequest->init($path);
 		$this->dispatch($redirectRequest);
 	}
 	
@@ -35,7 +36,7 @@ final class ENT_Controller_Front {
 	
 	public function dispatch($_request = false) {
 		Entrophy_Profiler::startStep('root');
-			$request = $_request ? $_request : $this->request;
+			$request = $_request ?  : $this->request;
 			$request_cache = new ENT_Request_Cache($request);
 			$match = $this->router->match($request);
 			$header = new ENT_Template_Header();
@@ -50,7 +51,6 @@ final class ENT_Controller_Front {
 			$view_id = $section_name.'/'.$controller_name.'/'.$view_name;
 			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;			
 
-			#die($mvc_path.":D");
 			if ($controller = ENT::getController($section_name.'/'.$controller_name)) {
 				$controller->setFrontController($this);
 				$controller->setRequest($request);
@@ -70,7 +70,7 @@ final class ENT_Controller_Front {
 							$this->_processTemplate();
 						Entrophy_Profiler::stopStep();
 					
-						$controller->setTemplateObject($this->template);
+						$controller->setLayoutObject($this->template);
 						$controller->_afterTemplateAction();
 				
 						$action = $match['action']."Action";
@@ -95,7 +95,7 @@ final class ENT_Controller_Front {
 										$view->setHeader($header);
 									}
 								
-									if (!$this->renderViewLater && (!$this->template || !$this->renderTemplate)) {
+									if (!$this->renderViewLater && (!$this->template || !$this->renderLayout)) {
 										Entrophy_Profiler::startStep('renderView');
 											$view->render();
 											$content = $view->getContents();
@@ -111,11 +111,11 @@ final class ENT_Controller_Front {
 									$this->template->setContentView($view);
 									$this->template->setContent($view);
 									$this->template->setHeader($header);
-								} else {
+								} elseif ($this->renderLayout) {
 									echo "unable to find layout template:".$this->layout;
 								}
 					
-								if ($this->renderTemplate && $this->template) {
+								if ($this->renderLayout && $this->template) {
 									$content = $this->template->render();
 								}
 							Entrophy_Profiler::stopStep();
@@ -181,8 +181,8 @@ final class ENT_Controller_Front {
 	public function renderViewLater($render) {
 		$this->renderViewLater = $render;
 	}
-	public function renderTemplate($render) {
-		$this->renderTemplate = $render;
+	public function renderLayout($render) {
+		$this->renderLayout = $render;
 	}
 	public function getHeader() {
 		if (!$this->templateHeader) {

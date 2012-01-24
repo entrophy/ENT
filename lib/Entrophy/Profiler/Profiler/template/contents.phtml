@@ -1,0 +1,43 @@
+<div id="rad-profiler">
+	<div class="rad-profiler-button">
+		 <?php echo $this->displayTime($this->getTotalDuration()); ?> ms
+	</div>
+
+	<div class="rad-profiler">
+		<div class="summary">
+			<div class="header">
+				RAD Profiler
+			</div>
+		
+			<div class="steps">
+				<div class="head">
+					<div class="time">
+						<div class="duration">duration (ms)</div>
+						<div class="start">from start (ms)</div>
+						<div class="query">query time (ms)</div>
+					</div>
+					<div class="name">index</div>
+
+					<div class="clear"></div>
+				</div>
+				<?php foreach (ENT_Profiler::getSteps() as $step): ?>
+					<?php echo $this->displayStep($step); ?>
+				<?php endforeach; ?>
+
+				<div class="clear"></div>
+			</div>
+
+			<div class="tools">
+				<a href="" class="trivial-toggle" rel="show trivial">hide trivial</a>
+
+				<div class="clear"></div>
+			</div>
+		</div>
+
+		<div class="details">
+			<?php foreach (ENT_Profiler::getSteps() as $step): ?>
+				<?php echo $this->displayQuery($step); ?>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>

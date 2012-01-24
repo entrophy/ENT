@@ -34,7 +34,7 @@ final class ENT_Controller_Front {
 	}
 	
 	public function dispatch($_request = false) {
-		ENT_Profiler::startStep('root');
+		Entrophy_Profiler::startStep('root');
 			$request = $_request ? $_request : $this->request;
 			$request_cache = new ENT_Request_Cache($request);
 			$match = $this->router->match($request);
@@ -59,16 +59,16 @@ final class ENT_Controller_Front {
 				$controller->setHeader($header);
 				$controller->init();
 			
-				ENT_Profiler::startStep('beforeAction');
+				Entrophy_Profiler::startStep('beforeAction');
 					$controller->_beforeAction();
-				ENT_Profiler::stopStep();
+				Entrophy_Profiler::stopStep();
 				
 				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
 					if (!$request_cache->isViable()) {
 						$this->template = null;
-						ENT_Profiler::startStep('processTemplate');
+						Entrophy_Profiler::startStep('processTemplate');
 							$this->_processTemplate();
-						ENT_Profiler::stopStep();
+						Entrophy_Profiler::stopStep();
 					
 						$controller->setTemplateObject($this->template);
 						$controller->_afterTemplateAction();
@@ -79,12 +79,12 @@ final class ENT_Controller_Front {
 							$action = "_".$action;
 						}
 
-						ENT_Profiler::startStep($action);
+						Entrophy_Profiler::startStep($action);
 							#ob_start();
 							$controller->$action();
 							#$controller_action_contents = ob_get_contents();
 							#ob_end_clean();
-						ENT_Profiler::stopStep();
+						Entrophy_Profiler::stopStep();
 			
 						if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
 							$template = ENT::getViewTemplate($view_id);
@@ -96,17 +96,17 @@ final class ENT_Controller_Front {
 									}
 								
 									if (!$this->renderViewLater && (!$this->template || !$this->renderTemplate)) {
-										ENT_Profiler::startStep('renderView');
+										Entrophy_Profiler::startStep('renderView');
 											$view->render();
 											$content = $view->getContents();
-										ENT_Profiler::stopStep();
+										Entrophy_Profiler::stopStep();
 									}
 								} else {
 									echo "unable to load view: ".$view_id;
 								}
 							}
 
-							ENT_Profiler::startStep('renderTemplate');
+							Entrophy_Profiler::startStep('renderTemplate');
 								if ($this->template) {
 									$this->template->setContentView($view);
 									$this->template->setContent($view);
@@ -118,7 +118,7 @@ final class ENT_Controller_Front {
 								if ($this->renderTemplate && $this->template) {
 									$content = $this->template->render();
 								}
-							ENT_Profiler::stopStep();
+							Entrophy_Profiler::stopStep();
 					
 							#$content = $controller_action_contents.$content;
 					
@@ -130,17 +130,17 @@ final class ENT_Controller_Front {
 						}
 					} 
 				} else {
-					ENT_Profiler::startStep("cacheLoad");
+					Entrophy_Profiler::startStep("cacheLoad");
 						$this->response->setContent($request_cache->getContent());
-					ENT_Profiler::stopStep();
+					Entrophy_Profiler::stopStep();
 				}
 
 				$controller->_afterAction();
 					
 				// Root stop
-				ENT_Profiler::stopStep();
+				Entrophy_Profiler::stopStep();
 				if (ENT::getEnvironment() && ENT::getEnvironment()->getType() == 'development') {
-					$this->response->setContent(str_replace("{{rad-profiler}}", ENT_Profiler::getHtmlContent(), $this->response->getContent()));
+					$this->response->setContent(str_replace("{{rad-profiler}}", Entrophy_Profiler::getHtmlContent(), $this->response->getContent()));
 				} else {
 					$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
 				}

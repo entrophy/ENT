@@ -1,5 +1,5 @@
 <?php
-require ENT::registry('ent_path').'functions.php';
+require ENT::registry('ent_path').'src/functions.php';
 
 final class ENT {
 	private static $_app;

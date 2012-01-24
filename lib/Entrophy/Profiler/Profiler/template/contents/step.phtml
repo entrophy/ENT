@@ -1,0 +1,23 @@
+<div class="step <?php if ($this->displayTime($this->getStep()->getDuration()) < 25): ?>trivial<?php endif; ?>" id="ENT_profiler_step_<?php echo $this->getStep()->getID(); ?>">
+	<div class="data">
+		<div class="time">
+			<div class="duration"><?php echo $this->displayTime($this->getStep()->getDuration()); ?></div>
+			<div class="start"><span>+</span> <?php echo $this->displayStart($this->getStep()->getStart()); ?></div>
+			<?php if ($query_count = count($queries = $this->getStep()->getQueries())): ?>
+				<div class="sql"><a href=""><?php echo $query_count; ?> sql</a></div>
+				<div class="query"><?php echo $this->displayTime($this->getStep()->getQueryDuration()); ?></div>
+			<?php else: ?>
+				<div class="sql">&nbsp;</div>
+				<div class="query">&nbsp;</div>
+			<?php endif; ?>
+		</div>
+		<div class="name"><?php echo $this->getStep()->getName(); ?></div>	
+	</div>
+	<?php if (count($steps = $this->getStep()->getChildren())): ?>
+		<div class="children">
+			<?php foreach ($steps as $step): ?>
+				<?php echo $this->displayStep($step); ?>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
+</div>

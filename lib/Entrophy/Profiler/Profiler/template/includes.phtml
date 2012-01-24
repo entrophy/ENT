@@ -1,0 +1,71 @@
+<script type="text/javascript">
+	(function() {
+		var Profiler = {
+			init: function() {
+				Profiler.View.init();
+			},
+			View: {
+				init: function() {
+					$('#rad-profiler .rad-profiler-button').click(function() {
+						$('#rad-profiler .rad-profiler').toggle();
+					});
+				
+					$('#rad-profiler .rad-profiler .summary .tools .trivial-toggle').click(function() {
+						var rel = $(this).attr('rel');
+						$(this).attr('rel', $(this).html()).html(rel);
+					
+						$('#rad-profiler .rad-profiler .summary .steps .trivial').toggle();
+						
+						return false;
+					});
+
+					$('#rad-profiler .rad-profiler .summary .steps .step .data .time .sql a').click(function() {
+						var id = $(this).closest('.step').attr('id').split('_').pop();
+						
+						$('#rad-profiler .rad-profiler .details .queries').not('#ENT_profiler_step_'+id+'_queries').hide();
+						$('#ENT_profiler_step_'+id+'_queries').toggle();
+						
+						return false;
+					});
+
+					$('#rad-profiler .rad-profiler .details .queries .content .query .info .query-toggle').click(function() {
+						var rel = $(this).attr('rel');
+						$(this).attr('rel', $(this).html()).html(rel);
+						
+						$(this).closest('.query').find('.info .toggle, .sql').toggle();
+						return false;
+					});
+
+
+					$('#rad-profiler .rad-profiler .details .queries .tools .query-show-all').click(function() {
+						$('#rad-profiler .rad-profiler .details .queries .content .query').each(function() {
+							$(this).find('.info .toggle, .sql').show();
+							$(this).find('.info .query-toggle').attr('rel', 'show').html('hide');
+						});
+						return false;
+					});
+
+					$('#rad-profiler .rad-profiler .details .queries .tools .query-hide-trivial').click(function() {
+						$('#rad-profiler .rad-profiler .details .queries .content .query.trivial').each(function() {
+							$(this).find('.info .toggle, .sql').hide();
+							$(this).find('.info .query-toggle').attr('rel', 'hide').html('show');
+						});
+						return false;
+					});
+
+					$('#rad-profiler .rad-profiler .details .queries .tools .query-hide').click(function() {
+						$('#rad-profiler .rad-profiler .details .queries').hide();
+						
+						return false;
+					});
+
+				}
+			}
+		}
+
+		$(document).ready(function() {
+			Profiler.init();
+		});
+	})();
+</script>
+<style type="text/css"><?php include 'styles.css'; ?></style>

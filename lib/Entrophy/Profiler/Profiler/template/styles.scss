@@ -1,0 +1,224 @@
+#rad-profiler {
+	font-family: Arial, "Arial";
+	font-size: 12px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 100;
+
+	span {
+		font-family: Arial, "Arial";
+		font-size: 12px;
+	}
+	a, a:hover, a:visited, a:link {
+		color: #0066CC;
+		font-family: Arial, "Arial";
+		font-size: 12px;
+	}
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.clear {
+		clear: both;
+		font-size: 0px;
+		line-height: 0px;
+		height: 0px;
+		width: 0px;
+	}
+
+	.rad-profiler-button {
+		position: absolute;
+		width: 70px;
+		text-align: center;
+		top: 0;
+		right: 0;
+		background-color: #d8d8d8;
+		border-bottom: 1px solid #888;
+		border-left: 1px solid #888;
+		padding: 5px 10px;
+		font-family: Courier, "Courier";
+		font-weight: bold;
+		cursor: pointer;
+	}
+
+	.rad-profiler {
+		display: none;
+		width: 500px;
+		position: absolute;
+		right: 90px;
+		top: 0;
+
+		.summary {
+			background-color: #fff;
+			border: 1px solid #888;
+			border-top: none;
+			padding: 10px;
+
+			.header {
+				margin: 0px 0px 5px 0px;
+			}
+
+			.steps {
+				margin: 0px 0px 5px 0px;
+
+				.head {
+					
+					.name {
+						color: #ccc;
+						padding: 2px 5px;
+					}
+					.time {
+						float: right;
+						
+						.duration, .start, .query {
+							float: left;
+							text-align: right;
+							width: 100px;
+							padding: 2px 5px;
+							color: #bbb;
+						}
+					}
+				}
+				
+				.step {
+					font-family: Courier, "Courier";
+					
+					.data {
+						.name {
+							padding: 2px 5px;
+							color: #000;
+						}
+						.time {
+							float: right;
+							
+							.duration, .start, .sql, .query {
+								float: left;
+								text-align: right;
+								padding: 2px 5px;
+								width: 100px;
+								color: #000;
+							}
+							.start {
+								span {
+									color: #bbb
+								}	
+							}
+							.sql {
+								width: 50px;
+								padding-right: 0;
+							}
+							.query {
+								width: 45px;
+							}
+						}
+					}
+
+					&.trivial {
+						.data {
+							.name {
+								color: #bbb;
+							}
+							.time {
+								.duration, .start, .query {
+									color: #bbb;
+								}
+							}
+						}
+					}
+				}
+				
+				.children {
+					padding-left: 15px;
+				}
+			}
+
+			.tools {
+				a {
+					display: block;
+					float: left;
+					padding: 2px 0px 0px 0px;
+					margin: 0px 16px 0px 0px;
+				}
+			}
+		}
+
+		.details {
+			.queries {
+				display: none;
+				
+				background-color: #F4F8FA;
+				border: 1px solid #888;
+				border-top: none;
+			
+				.tools {
+					background-color: #d8d8d8;
+					padding: 5px 10px;
+					border-bottom: 1px solid #888;
+					
+					a {
+						display: block;
+						float: left;
+						padding: 2px 0px;
+						margin: 0px 16px 0px 0px;
+					}
+				}
+				.content {
+					overflow-y: scroll;
+					height: 400px;
+				
+					.query {
+						padding: 10px;
+						border-top: 1px solid #888;
+					
+						.info {
+							float: left;
+							width: 100px;
+							font-family: Courier, "Courier";
+							text-align: right;
+						
+							span {
+								color: #bbb;
+								font-family: Courier, "Courier";
+								font-size: 12px;
+							}
+
+							a {
+								font-family: Arial, "Arial";
+							}
+						}
+						.sql {
+							float: right;
+							width: 340px;
+							padding: 0px 10px 0px 0px;
+							font-family: Courier, "Courier";
+
+							.tag {
+								font-weight: bold;
+								color: #AC1EB3;
+								
+								font-family: Arial, "Arial";
+								font-size: 12px;
+							}
+						}
+
+						&.first {
+							border: none;
+						}
+
+						&.trivial {
+							.info {
+								.toggle {
+									display: none;
+								}
+							}
+							.sql {
+								display: none;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

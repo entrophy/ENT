@@ -44,7 +44,22 @@ class Controller:
 		self.template_controller.write(dest_path+"/"+dest_file+'Controller.php')
 
 	def buildTemplate(self):
-		print ""
+		dest_file = self.get_dest_file()
+		dest_path = self.get_dest_path()
+
+		if dest_path != '':
+			dest_path = template_base()+'/'+self.get_section().lower()+'/'+dest_path.lower()
+		else:
+			dest_path = template_base()+'/'+self.get_section().lower()
+
+		mkdir(dest_path)
+
+		data = {
+			"{{path}}": self.path
+		}
+
+		self.template_controller.replace(data)
+		self.template_controller.write(dest_path+"/"+dest_file+'.phtml')
 
 
 	def get_dest_file(self):

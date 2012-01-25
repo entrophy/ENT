@@ -4,7 +4,7 @@ import shutil;
 
 ignore = ['.', '..', '.git', 'README.md'];
 
-root = os.path.abspath(os.path.realpath(__file__)).replace('/tools/build', '');
+root = os.path.abspath(os.path.realpath(__file__)).replace('/tools/build.py', '');
 lib = os.path.join(root, 'lib', '');
 vendors = os.listdir(lib);
 

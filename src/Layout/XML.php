@@ -1,5 +1,5 @@
 <?php
-class ENT_Template_XML extends ENT_Template_Abstract {
+class ENT_Layout_XML extends ENT_Layout_Abstract {
 	private $xml;
 	private $header;
 	private $data;

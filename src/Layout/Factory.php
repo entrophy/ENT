@@ -1,5 +1,5 @@
 <?php
-class ENT_Template_Factory {
+class ENT_Layout_Factory {
 	const XML = "xml";
 	const PHP_HTML = "php/html";
 	const TAG_HTML = "tag/html";
@@ -7,10 +7,10 @@ class ENT_Template_Factory {
 	public function getTemplate($type) {
 		switch ($type) {
 			case self::XML:
-				return new ENT_Template_XML();
+				return new ENT_Layout_XML();
 				break;
 			case self::PHP_HTML:
-				return new ENT_Template_PHPHTML();
+				return new ENT_Layout_PHPHTML();
 				break;
 		}
 	}

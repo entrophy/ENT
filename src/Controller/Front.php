@@ -156,11 +156,11 @@ final class ENT_Controller_Front {
 	public function _processTemplate() {
 		$this->layout = 'app/design/layout/'.$this->_layout;
 		if (file_exists($this->layout.".phtml") && is_file($this->layout.".phtml")) {
-			$this->template = ENT_Template_Factory::getTemplate(ENT_Template_Factory::PHP_HTML);
+			$this->template = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::PHP_HTML);
 			$this->template->setFile($this->layout.".phtml");
 		}
 		else if (file_exists($this->layout.".xml") && is_file($this->layout.".xml")) {
-			$this->template = ENT_Template_Factory::getTemplate(ENT_Template_Factory::XML);
+			$this->template = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::XML);
 			$this->template->setFile($this->layout.".xml");
 		}
 

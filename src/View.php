@@ -1,5 +1,5 @@
 <?php
-class ENT_View extends ENT_Template_Abstract {
+class ENT_View extends ENT_Frontend {
 	protected $content;
 	protected $rendered = false;
 	protected $template;

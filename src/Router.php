@@ -56,7 +56,7 @@ class ENT_Router {
 	public function match($request) {
 		if ($request->getPath() != $this->_default) {
 			if ($rewrite = $this->rewrite('/'.$request->getBaseUrl())) {
-				$request->addDebug('router-rw from: '.$request->getBaseUrl().' to: '.$rewrite);
+				$request->addDebug('router-rw from: /'.$request->getBaseUrl().' to: '.$rewrite);
 				$request->init($rewrite);
 			}
 
@@ -68,10 +68,13 @@ class ENT_Router {
 		$section = $request->getSection();
 		$controller = $request->getController();
 		$action = $view = $template = $request->getAction();
+		$full = implode("/", array($section, $controller, $action));
+		$traversable = str_replace("_", "/", $full);
 		
+		echo $traversable;
 		print_r($this->routes);
 		
-		return (object) array(
+		$response = array(
 			"section" => $section, 
 			"controller" => $controller, 
 			"action" => $action, 
@@ -80,6 +83,17 @@ class ENT_Router {
 			"template" => $template, 
 			"cache" => $cache
 		);
+		
+		print_r($this->find($traversable, array('layout', 'minify')));
+		
+		return (object) $response;
+	}
+	
+	private function find($path, $items, $context = null) {
+		if (!$context) {
+			$first = true;
+			$context = $this->routes;
+		}
 	}
 	
 	public function traverse($path, $item, $object) {

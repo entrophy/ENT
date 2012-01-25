@@ -107,25 +107,6 @@ class ENT_Layout_XML extends ENT_Layout_Abstract {
 					$viewName = array_shift(explode(".phtml", $data['template']));
 					
 					$view = ENT::getView($viewName, $path.$data['template'], false);
-					
-					
-					/*$viewName = $viewName[0];
-					$viewName = str_replace(array("_", "-"), " ", $viewName);
-					$viewName = ucwords($viewName);
-					$viewName = str_replace(" ", "", $viewName);
-					$viewPath = 'app/code/views/';
-					$viewName = $viewNamePrefix.$viewName;
-					
-					$viewName = str_replace("/", " ", $viewName);
-					$viewName = ucwords($viewName);
-				
-					$viewPath = $viewPath . str_replace(" ","/", $viewName) . ".php";
-					$viewName = str_replace(" ", "_", $viewName)."_View";*/
-				}
-				
-				/*if ($viewPath && is_file($viewPath) && file_exists($viewPath)) {
-					$view = new $viewName($path.$data['template'], false);
-				} else {*/
 				if (!$view) {
 					if ($data['template']) {
 						$view = new ENT_View($path.$data['template'], false);
@@ -183,6 +164,7 @@ class ENT_Layout_XML extends ENT_Layout_Abstract {
 	public function process($overwrite = false) {
 		if (!$this->data || $overwrite) {
 			$this->xml = new SimpleXMLElement(file_get_contents($this->file));
+			
 		
 			$data = $this->processXML($this->xml);
 			
@@ -208,7 +190,6 @@ class ENT_Layout_XML extends ENT_Layout_Abstract {
 				}
 			}
 		}
-		
 		$output = ob_get_contents();
 		ob_end_clean();
 		

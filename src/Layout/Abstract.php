@@ -1,8 +1,8 @@
 <?php
 class ENT_Layout_Abstract extends ENT_Frontend {
-	private $contentView;
-	private $file;
-	private $content;
+	protected $contentView;
+	protected $file;
+	protected $content;
 	
 	public function setFile($file) {
 		$this->file = $file;

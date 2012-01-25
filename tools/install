@@ -4,7 +4,7 @@ import os;
 root = os.path.abspath(os.path.realpath(__file__)).replace('/install', '');
 def createSymLink(src, dst):
 	print('Creating symlink from '+src+' to '+dst);
-	if (os.path.exists(dst)):
+	if (os.path.lexists(dst)):
 		os.remove(dst);
 		
 	os.symlink(src, dst);

@@ -33,19 +33,6 @@ abstract class ENT_Template_Abstract {
 		return ENT::app()->getFrontController()->getRequest();
 	}
 	
-	public function generateCSSURL($path) {
-		return $this->getBasePath().'app/design/css/'.$path.'.css';
-	}
-	public function generateIMGURL($path) {
-		return $this->getBasePath().'app/design/image/'.$path;
-	}
-	public function generateJSURL($path) {
-		if (stristr($path, 'http://')) {
-			return $path;
-		}
-		return $this->getBasePath().'scripts/'.$path;
-	}
-	
 	public function generateURL($path) {
 		return $this->getBasePath().$path;
 	}

@@ -107,6 +107,7 @@ class ENT_Layout_XML extends ENT_Layout_Abstract {
 					$viewName = array_shift(explode(".phtml", $data['template']));
 					
 					$view = ENT::getView($viewName, $path.$data['template'], false);
+				}
 				if (!$view) {
 					if ($data['template']) {
 						$view = new ENT_View($path.$data['template'], false);

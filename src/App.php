@@ -12,7 +12,8 @@ class ENT_App {
 	
 	public function getDatabase() {
 		if (!$this->database) {
-			$this->database = new ENT_Database();
+			$this->database = Entrophy_Database::getInstance();
+			$this->database->init($this->getConfig()->getDatabase());
 		}
 		return $this->database;
 	}

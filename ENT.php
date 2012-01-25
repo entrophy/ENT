@@ -8,7 +8,6 @@ final class ENT {
 	private static $_basePath;
 	public static function register($key, $value) {
 		self::$_registry[$key] = $value;
-		return $this;
 	}
 	public static function registry($key) {
 		return self::$_registry[$key];
@@ -18,8 +17,13 @@ final class ENT {
 	}
 	
 	public static function run() {
+		ENT::getLibrary('entrophy/database');
+		ENT::getLibrary('entrophy/profiler');
+
+		$database = self::app()->getDatabase();
+		$queryBuilder = $database->queryBuilder();
+			
 		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
-			ENT::getLibrary('entrophy/profiler');
 			Entrophy_Profiler::start();
 		}
 		self::app()->getFrontController()->dispatch();

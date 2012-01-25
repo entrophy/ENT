@@ -8,29 +8,6 @@ root = os.path.abspath(os.path.realpath(__file__)).replace('/tools/build.py', ''
 lib = os.path.join(root, 'lib', '');
 vendors = os.listdir(lib);
 
-def test(base, dirname, names):
-	'''basename = dirname.replace(base, '');
-	print(lib);
-	delete = [];
-	
-	for name in names:
-		if name in ignore:
-			delete.append(names.index(name));
-		else:
-			if (basename != '' and os.path.isdir(os.path.join(dirname, name))):
-				print(basename);
-				print(":D"+os.path.join(dirname, name));
-	
-	delete.sort();
-	delete.reverse();
-	
-	for index in delete:
-		del[names[int(index)]];
-	'''
-		
-	
-	
-
 for vendor in vendors:
 	remotes = os.listdir(lib+vendor+'/remotes/');
 	for remote in remotes:

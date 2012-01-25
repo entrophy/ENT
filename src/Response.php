@@ -36,7 +36,7 @@ class ENT_Response {
 		return $this->content;
 	}
 	public function send() {
-		$compress = ENT::app()->getConfig()->doCompress();
+		$compress = ENT::app()->getConfig()->getValue('web/compress');
 	
 		switch ($this->type) {
 			case 'pdf':
@@ -68,30 +68,20 @@ class ENT_Response {
 		
 		if ($this->content) {
 			$content = $this->content;
-			#echo str_replace(array("\t", "\r\n", "\r", "\n"), "", $this->content);
 			
 			if ($compress) {
 				$encoding = false;
-				if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false ) {
+				if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) {
 					$encoding = 'x-gzip';
 				}
-				elseif (strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false ) {
+				elseif (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
 					$encoding = 'gzip';
-				} else {
-					$encoding = false;
 				}
-	
-	
+				
 				if ($encoding) {
 					$size = strlen($content);
-					
-					#if ($size > 50) {
-						header('Content-Encoding: '.$encoding);
-						#print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
-						
-						$content = gzencode($content, 6);
-						#$content = substr($content, 0, $size);
-					#}
+					header('Content-Encoding: '.$encoding);
+					$content = gzencode($content, 6);
 				} 
 			}
 			

@@ -42,8 +42,6 @@ final class ENT_Controller_Front {
 			$match = $this->router->match($request);
 			$header = new ENT_Template_Header();
 			
-			print_r($match);
-		
 			$this->layout = $this->_layout = $match->layout;
 			$section_name = $match->section;
 
@@ -83,10 +81,7 @@ final class ENT_Controller_Front {
 						}
 
 						Entrophy_Profiler::startStep($action);
-							#ob_start();
 							$controller->$action();
-							#$controller_action_contents = ob_get_contents();
-							#ob_end_clean();
 						Entrophy_Profiler::stopStep();
 			
 						if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
@@ -122,9 +117,7 @@ final class ENT_Controller_Front {
 									$content = $this->template->render();
 								}
 							Entrophy_Profiler::stopStep();
-					
-							#$content = $controller_action_contents.$content;
-					
+
 							if ($content) {
 								$this->response->setContent($content);
 							}
@@ -148,9 +141,10 @@ final class ENT_Controller_Front {
 					$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
 				}
 				
+				#die(":D");
 				$this->response->send();
 			}
-		} else {			
+		} else {
 			if ($this->router->getDefault() && $this->router->getDefault() != $request->getPath()) {
 				$this->redirect($this->router->getDefault());
 			} else {		

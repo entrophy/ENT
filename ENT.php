@@ -19,9 +19,6 @@ final class ENT {
 	public static function run() {
 		ENT::getLibrary('entrophy/database');
 		ENT::getLibrary('entrophy/profiler');
-
-		$database = self::app()->getDatabase();
-		$queryBuilder = $database->queryBuilder();
 			
 		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
 			Entrophy_Profiler::start();

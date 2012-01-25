@@ -129,6 +129,8 @@ function ENT_Autoload($class) {
 		require ENT::registry('ent_path').'src/'.str_replace(array('ENT_', '_'), array('', '/'), $class).'.php';
 	} else if (preg_match('/Controller$/', $class)) {
 		require ENT::registry('project_path').'app/code/controllers/'.str_replace("_", "/", $class).'.php';
+	} else if (strpos($class, 'Helper_') === 0) {
+	
 	}
 }
 spl_autoload_register('ENT_Autoload');

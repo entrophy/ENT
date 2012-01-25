@@ -1,26 +1,12 @@
 <?php
-abstract class ENT_Controller {
+abstract class ENT_Controller extends ENT_Controller_Abstract {
 	protected $frontController;
 	private $request;
 	private $request_cache;
 	private $response;
 	private $header;
 	private $layout;
-	
-	public function init() {
-	
-	}
-	
-	public function _beforeAction() {
-	
-	}
-	public function _afterAction() {
-	
-	}
-	public function _afterTemplateAction() {
-	
-	}
-	
+		
 	public function addMessage($message) {
 		
 	}

@@ -301,12 +301,17 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 
  	public function fetch() {
 		if (!$this->result) {
-			$query = $this->query = $this->queryBuilder->getQuery();
-			$result = $this->database->execute($query);
+			/*
+			#$query = $this->query = $this->queryBuilder->getQuery();
+			#$result = $this->database->execute($query);
 			$this->getTotalCount();
 			
 			$this->result = $result;
 			$this->items = $this->database->resultToArray($result);
+			*/
+
+			$this->result = $this->queryBuilder->execute();
+			$this->items = $this->result;
 		}
 		return $this->items;
 	}

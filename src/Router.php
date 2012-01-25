@@ -71,9 +71,6 @@ class ENT_Router {
 		$full = implode("/", array($section, $controller, $action));
 		$traversable = str_replace("_", "/", $full);
 		
-		echo $traversable;
-		print_r($this->routes);
-		
 		$response = array(
 			"section" => $section, 
 			"controller" => $controller, 
@@ -83,39 +80,43 @@ class ENT_Router {
 			"template" => $template, 
 			"cache" => $cache
 		);
-		
-		print_r($this->find($traversable, array('layout', 'minify')));
+
+		$find = $this->find($traversable, array('layout', 'minify'));
+		$response = array_merge($response, array_filter($find));
 		
 		return (object) $response;
 	}
 	
 	private function find($path, $items, $context = null) {
 		if (!$context) {
+			if (!is_array($items)) {
+				$items = array($items);
+			}
 			$first = true;
 			$context = $this->routes;
 		}
-	}
-	
-	public function traverse($path, $item, $object) {
-		$path = explode("/", $path);
-		$target = $path[0];
-		$path = implode("/", array_splice($path, 1));
+		if (strpos($path, '/') === false) {
+			$target = $path;
+			$end = true;
+		} else {
+			$path = explode('/', $path);
+			$target = $path[0];
+			$end = false;
+		}
 		
-		$_value = (string)$object->$target->$item;
-		if (!$_value) {
-			$_value = (string)$object->default->$item;
-		}
-		if ($_value) {
-			$value = $_value;
-		}
-	
-		if ($path) {
-			$_value = $this->traverse($path, $item, $object->$target);
-			if ($_value) {
-				$value = $_value;
+		if ($context = $context->$target) {
+			$values = array();
+			foreach ($items as $item) {
+				$values[$item] = $context->$item;
 			}
+
+			if (!$end) {
+				$values = array_merge($values, array_filter($this->find(implode("/", array_slice($path, 1)), $items, $context)));
+			}
+			return $values;
+		} else {
+			return array();
 		}
-		return $value;
 	}
 	
 }

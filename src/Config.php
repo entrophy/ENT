@@ -45,7 +45,7 @@ class ENT_Config {
 			$context = $this->config;
 		}
 		
-		if (strstr($path, '/')) {
+		if (strpos($path, '/') !== false) {
 			$_path = explode("/", $path);
 			
 			$first = array_splice($_path, 0, 1);

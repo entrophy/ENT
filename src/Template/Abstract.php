@@ -7,8 +7,8 @@ abstract class ENT_Template_Abstract {
 	protected $contentView;
 	public function getBasePath() {
 		if (!$this->basePath) {
-			$config = ENT::app()->getConfig()->getWebConfig();
-			$this->basePath = $config['path'];
+			$config = ENT::app()->getConfig()->getWeb();
+			$this->basePath = $config->path;
 		}
 		return $this->basePath;
 	}

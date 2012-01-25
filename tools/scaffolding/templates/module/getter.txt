@@ -1,0 +1,3 @@
+	public function get{{function}}() {
+		return $this->valueObject->{{property}};
+	}

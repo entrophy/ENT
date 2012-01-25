@@ -99,23 +99,14 @@ class ENT_Template_XML extends ENT_Template_Abstract {
 			if (!$data['template'] && $data['name'] == "content") {
 				$view = $this->getContent();
 			} else {
-				switch ($data['type']) {
-					case 'module_element':
-						$path = 'app/design/template/';
-						break;
-					case 'layout_element':
-					default:
-						$path = 'app/design/template/page/';
-						$viewNamePrefix = "Page/";
-						break;
-				}
-				
+				$path = 'app/design/template/';
+						
 				$viewPath = null;
 				
 				if ($data['template']) {
 					$viewName = array_shift(explode(".phtml", $data['template']));
 					
-					$view = ENT::getView($viewNamePrefix.$viewName, $path.$data['template'], false);
+					$view = ENT::getView($viewName, $path.$data['template'], false);
 					
 					
 					/*$viewName = $viewName[0];

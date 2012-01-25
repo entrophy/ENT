@@ -54,7 +54,8 @@ class Module:
 			"{{table}}": self.get_table(),
 			"{{fields}}": self.get_fields(),
 			"{{properties}}": self.get_properties(),
-			"{{key}}": self.get_key()
+			"{{key}}": self.get_key(),
+			"{{getters}}": self.get_getters()
 		}
 
 		for item in self.templates:
@@ -139,3 +140,26 @@ class Module:
 			x += 1
 
 		return result
+	def get_getters(self):
+		result = ''
+
+		for key in self.properties.split(','):
+			result += self.get_getter(key)
+
+		return result
+	def get_getter(self, key):	
+		template = Template('module/getter.txt')
+
+		function = key.replace('_', ' ').lower()
+		function = string.capwords(function);
+		function = function.replace(' ', '')
+	
+		data = {
+			"{{function}}": function,
+			"{{property}}": key
+		}
+
+		template.replace(data)
+
+		return template.get_content()
+		

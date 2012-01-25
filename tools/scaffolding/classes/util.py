@@ -39,9 +39,9 @@ def mkdir(path):
 
 def prompt(prompt):
     while True:
-        ok = raw_input(prompt)
+        ok = raw_input(prompt).lower()
         if ok in ('', 'y', 'ye', 'yes'):
             return True
         if ok in ('!', 'n', 'no', 'nop', 'nope'):
             return False
-        print 'Please type either yes or no (Y/N): '
+        print 'Please type either yes or no (Y/n default: Y): '

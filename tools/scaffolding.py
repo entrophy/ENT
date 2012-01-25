@@ -24,9 +24,13 @@ class Scaffolding:
 			
 
 def main():
-	Scaffolding(sys.argv[1])
+	if len(sys.argv) > 1:
+		type = sys.argv[1]
+	else:
+		type = raw_input("Choose type (controller|module): ")
 
-
+	Scaffolding(type)
+		
 if __name__ == '__main__':
 	main()
 

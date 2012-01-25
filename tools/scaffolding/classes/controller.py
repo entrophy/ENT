@@ -62,7 +62,7 @@ class Controller:
 					template_action.replace({
 						'{{action}}': action
 					})
-
+ 
 					lines.insert(-3, template_action.get_content())
 
 					print 'Action "'+action+'Action" added to "'+controller_path+'"'

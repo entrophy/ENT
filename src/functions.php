@@ -218,6 +218,7 @@ function __autoload($class) {
 		
 		$fileName = $fileName.".php";
 		$includePath .= $fileName;
+		
 		if (file_exists($includePath)) {	
 			require $includePath;
 		}

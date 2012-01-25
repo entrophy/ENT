@@ -1,5 +1,5 @@
 <?php
-class {{class_path}} extends ENT_Module {
+class {{class_path}}_Load extends ENT_Module_Load {
 	protected static $module_key = {{key}};
 }
 ?>

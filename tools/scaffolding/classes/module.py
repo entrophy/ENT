@@ -13,10 +13,14 @@ class Module:
 		self.path = raw_input("Module path (e.g. module/path): ")
 		self.properties = raw_input("Properties (e.g. key, key, key): ")
 		self.table = raw_input("Database table (e.g. table_name): ")
+		
 		print ""
 
 		self.path = self.path.replace('_', '/')
 		self.properties = self.properties.replace(' ', '')
+
+		if self.table == '':
+			self.table = self.get_class_path().lower()
 
 		self.templates = [
 			{ 'template': Template('module/module.txt'),

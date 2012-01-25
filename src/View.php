@@ -41,6 +41,7 @@ class ENT_View extends ENT_Frontend {
 		ob_end_clean();
 		
 		$this->rendered = true;
+		return $this;
 	}
 	
 	public function setValues(array $values) {
@@ -94,6 +95,7 @@ class ENT_View extends ENT_Frontend {
 	
 	public function setHeader(ENT_Template_Header $header) {
 		$this->header = $header;
+		return $this;
 	}
 	public function getHeader() {
 		return $this->header;
@@ -101,6 +103,7 @@ class ENT_View extends ENT_Frontend {
 	
 	public function setLayoutAttributes($attributes) {
 		$this->layout_attributes = $attributes;
+		return $this;
 	}
 	public function getLayoutAttribute($name) {
 		return $this->layout_attributes[$name];
@@ -122,10 +125,12 @@ class ENT_View extends ENT_Frontend {
 	
 	public function addData($key, $value) {
 		$this->data[$key] = $value;
+		return $this;
 	}
 	
 	public function addAction($method, $value) {
 		$this->actions[$method] = $value;
+		return $this;
 	}
 	
 	public function getActions($method) {

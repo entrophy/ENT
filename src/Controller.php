@@ -66,8 +66,8 @@ abstract class ENT_Controller extends ENT_Controller_Abstract {
 	public function setLayout($layout) {
 		$this->frontController->setLayout($layout);
 	}
-	public function getTemplate() {
-		return $this->frontController->getTemplate();
+	public function getLayout() {
+		return $this->frontController->getLayout();
 	}
 	
 	public function url($path) {

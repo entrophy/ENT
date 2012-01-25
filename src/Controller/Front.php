@@ -7,10 +7,11 @@ final class ENT_Controller_Front {
 	private $templateHeader;
 	private $renderLayout = true;
 	private $renderView = true;
-	private $renderViewLater = false;
 	private $redirect = false;
 	private $layout;
-	private $_layout;
+	private $layout_file = null;
+	private $view;	
+	private $header;
 	
 	public function __construct() {
 		$this->request = new ENT_Request();
@@ -20,6 +21,7 @@ final class ENT_Controller_Front {
 	
 	public function redirect($path) {
 		$this->redirect = true;
+		$this->layout_file = null;
 
 		$request = $this->request;
 		$request->init($path);
@@ -36,103 +38,74 @@ final class ENT_Controller_Front {
 	
 	public function dispatch($_request = false) {
 		Entrophy_Profiler::startStep('root');
-			$request = $_request ? : $this->request;
-			$request_cache = new ENT_Request_Cache($request);
-			
-			$match = $this->router->match($request);
-			$header = new ENT_Template_Header();
-			
-			$this->layout = $this->_layout = $match->layout;
-			$section_name = $match->section;
+		$request = $_request ? : $this->request;
+		$request_cache = new ENT_Request_Cache($request);
+		
+		$match = $this->router->match($request);
+		$this->header = $header = new ENT_Template_Header();
+		
+		$section_name = $match->section;
 
-			$controller_name = str_replace("_", "/", $match->controller);
-			$action_name = $match->action;
-			$view_name = $match->view;
-			$view_id = $section_name.'/'.$controller_name.'/'.$view_name;
-			
-			$mvc_path = $section_name.'/'.$controller_name.'/'.$action_name;			
-
-			if ($controller = ENT::getController($match->section.'/'.$match->controller)) {
-				$controller->setFrontController($this)
-							  ->setRequest($request)
-							  ->setRequestCache($request_cache)
-							  ->setResponse($this->response)
-							  ->setHeader($header)
-							  ->init();
-			
-				Entrophy_Profiler::startStep('beforeAction');
-					$controller->_beforeAction();
+		$controller_name = str_replace("_", "/", $match->controller);
+		$action_name = $match->action;
+		$view_id = $match->view;
+		$view_template = $match->template;
+		
+		$mvc_path = $match->path;	
+		
+		if ($controller = ENT::getController($match->section.'/'.$match->controller)) {
+			$controller->setFrontController($this)
+						  ->setRequest($request)
+						  ->setRequestCache($request_cache)
+						  ->setResponse($this->response)
+						  ->setHeader($header)
+						  ->init();
+		
+			Entrophy_Profiler::startStep('beforeAction');
+				$controller->_beforeAction();
+			Entrophy_Profiler::stopStep();
+							
+			if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
+				Entrophy_Profiler::startStep('processLayout');
+					$this->processLayout($match);
 				Entrophy_Profiler::stopStep();
-				
-				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
-					if (!$request_cache->isViable()) {
-						$this->template = null;
-						Entrophy_Profiler::startStep('processTemplate');
-							$this->_processTemplate();
-						Entrophy_Profiler::stopStep();
-					
-						$controller->setLayoutObject($this->template);
-						$controller->_afterTemplateAction();
-				
-						$action = $match->action."Action";
-				
-						if (preg_match('/^([0-9]+)/ism', $action)) {
-							$action = "_".$action;
-						}
-
-						Entrophy_Profiler::startStep($action);
-							$controller->$action();
-						Entrophy_Profiler::stopStep();
 			
-						if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
-							$template = ENT::getViewTemplate($view_id);
-				
-							if ($this->renderView || $this->renderViewLater) {
-								if ($view = ENT::getView($view_id, $template, false)) {
-									if (is_object($view)) {
-										$view->setHeader($header);
-									}
-								
-									if (!$this->renderViewLater && (!$this->template || !$this->renderLayout)) {
-										Entrophy_Profiler::startStep('renderView');
-											$view->render();
-											$content = $view->getContents();
-										Entrophy_Profiler::stopStep();
-									}
-								} else {
-									echo "unable to load view: ".$view_id."<br />\n";
-								}
-							}
-
-							Entrophy_Profiler::startStep('renderTemplate');
-								if ($this->template) {
-									$this->template->setContentView($view);
-									$this->template->setContent($view);
-									$this->template->setHeader($header);
-								} elseif ($this->renderLayout) {
-									echo "unable to find layout template:".$this->layout."<br />\n";
-								}
-					
-								if ($this->renderLayout && $this->template) {
-									$content = $this->template->render();
-								}
-							Entrophy_Profiler::stopStep();
-
-							if ($content) {
-								$this->response->setContent($content);
-							}
-						if ($request_cache->isEnabled()) {
-							$request_cache->save($this->response->getContent());
-						}
-					} 
-				} else {
-					Entrophy_Profiler::startStep("cacheLoad");
-						$this->response->setContent($request_cache->getContent());
-					Entrophy_Profiler::stopStep();
+				$controller->setLayoutObject($this->layout);
+				$controller->_afterTemplateAction();
+		
+				$action = $match->action."Action";
+		
+				if (preg_match('/^([0-9]+)/ism', $action)) {
+					$action = "_".$action;
 				}
 
+				Entrophy_Profiler::startStep($action);
+					$controller->$action();
+				Entrophy_Profiler::stopStep();
+	
+				
+				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
+					Entrophy_Profiler::startStep('renderView');
+						$content = $this->processView($match);
+					Entrophy_Profiler::stopStep();
+
+					Entrophy_Profiler::startStep('renderLayout');
+						if ($this->renderLayout && $this->layout) {
+							#$this->layout->setContentView($this->view);
+							$this->layout->setContent($this->view);
+							$this->layout->setHeader($header);
+
+							$content = $this->layout->render();
+						}
+					Entrophy_Profiler::stopStep();
+
+					if ($content) {
+						$this->response->setContent($content);
+					}
+				} 
+
 				$controller->_afterAction();
-					
+				
 				// Root stop
 				Entrophy_Profiler::stopStep();
 				if (ENT::getEnvironment() && ENT::getEnvironment()->getType() == 'development') {
@@ -140,7 +113,7 @@ final class ENT_Controller_Front {
 				} else {
 					$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
 				}
-				
+			
 				#die(":D");
 				$this->response->send();
 			}
@@ -153,28 +126,79 @@ final class ENT_Controller_Front {
 		}
 	}
 	
-	public function _processTemplate() {
-		$this->layout = 'app/design/layout/'.$this->_layout;
+	private function processView($match) {
+		$this->view = null;
+						
+		if ($this->renderView) {
+			$template = ENT::getViewTemplate($match->template);
+			
+			$tried = array();		
+			$tries = array_filter(array($match->view, $match->found->view, ENT::getConfig()->getValue('default/view')));
+			
+			foreach ($tries as $try) {
+				if ($view = ENT::getView($try, $template, false)) {
+					break;
+				} else {
+					$tried[] = $try;
+				}
+			}
+			unset($tries);
 
-		if (file_exists($this->layout.".phtml") && is_file($this->layout.".phtml")) {
-			$this->template = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::PHP_HTML);
-			$this->template->setFile($this->layout.".phtml");
-		}
-		else if (file_exists($this->layout.".xml") && is_file($this->layout.".xml")) {
-			$this->template = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::XML);
-			$this->template->setFile($this->layout.".xml");
-		}
-
-		if ($this->template) {
-			$this->template->process();
+			if ($view) {
+				$this->view = $view;
+				$view->setHeader($this->header);
+			
+				if (!$this->layout || !$this->renderLayout) {
+					$view->render();
+					return $view->getContents();
+				}
+			} else {
+				throw new ENT_Exception("Unable to load view, tried: ".implode(", ", $tried));
+			}
 		}
 	}
 	
-	public function setTemplate($template) {
-		$this->_layout = $template;
+	private function processLayout($match) {
+		$this->layout = null;
+		
+		if ($this->renderLayout) {
+			$tried = array();	
+			$tries = array_filter(array($this->layout_file, $match->layout, $match->found->layout, ENT::getConfig()->getValue('default/layout')));
+			
+			foreach ($tries as $try) {
+				if ($try) {
+					$layout_file = 'app/design/layout/'.$try;
+					
+					if (file_exists($layout_file.".phtml")) {
+						$layout = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::PHP_HTML);
+						$layout->setFile($layout_file.".phtml");
+					} else if (file_exists($layout_file.".xml")) {
+						$layout = ENT_Layout_Factory::getTemplate(ENT_Layout_Factory::XML);
+						$layout->setFile($layout_file.".xml");
+					} else {
+						$tried[] = $try;
+					}
+				}
+			}
+
+			if ($layout) {
+				$this->layout = $layout;
+				$this->layout->process();
+			} else {
+				if (count($tried)) {
+					throw new ENT_Exception("Unable to load layout, tried: ".implode(", ", $tried));
+				} else {
+					throw new ENT_Exception("Unable to load layout, no layout file provided");
+				}
+			}
+		}
 	}
-	public function getTemplate() {
-		return $this->_layout;
+	
+	public function setLayout($layout) {
+		$this->layout_file = $layout;
+	}
+	public function getLayout() {
+		return $this->layout_file;
 	}
 	
 	public function renderView($render) {

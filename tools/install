@@ -11,5 +11,5 @@ def createSymLink(src, dst):
 
 print('Remember to run with sudo');
 
-createSymLink(os.path.join(root, 'build'), '/usr/bin/ent-build');
+createSymLink(os.path.join(root, 'build.py'), '/usr/bin/ent-build');
 createSymLink(os.path.join(root, 'scaffolding.py'), '/usr/bin/ent-scaffolding');

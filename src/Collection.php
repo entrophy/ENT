@@ -1,7 +1,6 @@
 <?php
 abstract class ENT_Collection implements IteratorAggregate, Countable {
 	protected $database;
-	protected $result;
 	protected $items;
 	protected $totalCount;
 	protected $queryBuilder;
@@ -51,7 +50,6 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	
 	public function reset() {	
-		$this->result = null;
 		$this->items = null;
 		$this->objects = null;
 		$this->queryBuilder->unsetQuery();
@@ -300,7 +298,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
  	}
 
  	public function fetch() {
-		if (!$this->result) {
+		if (!$this->items) {
 			/*
 			#$query = $this->query = $this->queryBuilder->getQuery();
 			#$result = $this->database->execute($query);
@@ -310,8 +308,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 			$this->items = $this->database->resultToArray($result);
 			*/
 
-			$this->result = $this->queryBuilder->execute();
-			$this->items = $this->result;
+			$this->items = $this->queryBuilder->execute();
 		}
 		return $this->items;
 	}

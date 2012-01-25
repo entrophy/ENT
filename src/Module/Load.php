@@ -24,9 +24,9 @@ class ENT_Module_Load {
 	public static function factory($data, $type = null, $object = true) {
 		if (!$type) {
 			if (is_array($data)) {
-				$type = static:MIXED;
+				$type = static::MIXED;
 			} else if (is_numeric($data)) {
-				$type = static:ID;
+				$type = static::ID;
 			}
 		}
 		

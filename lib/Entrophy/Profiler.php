@@ -1,5 +1,5 @@
 <?php
-spl_autoload_register(array('Entrophy_Profiler', 'autoload'));
+spl_autoload_register(array('Entrophy_Profiler', 'autoload'), true, true);
 class Entrophy_Profiler {
 	private static $running = false;
 	private static $current_step = null;

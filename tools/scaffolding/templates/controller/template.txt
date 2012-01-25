@@ -1,5 +1,1 @@
-TEMPLATE
-
-{{path}}
-
-TEMPLATE
+{{template_path}}

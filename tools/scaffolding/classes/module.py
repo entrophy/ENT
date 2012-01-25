@@ -15,18 +15,19 @@ class Module:
 		self.table = raw_input("Database table (e.g. table_name): ")
 		print ""
 
+		self.path = self.path.replace('_', '/')
 		self.properties = self.properties.replace(' ', '')
 
 		self.templates = [
-			{ 'template': Template('scaffolding/templates/module/module.txt'),
+			{ 'template': Template('module/module.txt'),
 				'ending': '.php' },
-			{ 'template': Template('scaffolding/templates/module/valueobject.txt'),
+			{ 'template': Template('module/valueobject.txt'),
 				'ending': '/ValueObject.php' },
-			{ 'template': Template('scaffolding/templates/module/dataaccessobject.txt'),
+			{ 'template': Template('module/dataaccessobject.txt'),
 				'ending': '/DAO.php' },
-			{ 'template': Template('scaffolding/templates/module/collection.txt'),
+			{ 'template': Template('module/collection.txt'),
 				'ending': '/Collection.php' },
-			{ 'template': Template('scaffolding/templates/module/load.txt'),
+			{ 'template': Template('module/load.txt'),
 				'ending': '/Load.php' }
 		]
 

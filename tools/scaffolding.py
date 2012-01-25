@@ -8,15 +8,10 @@ import sys
 from scaffolding.classes.controller import Controller
 from scaffolding.classes.module import Module
 from scaffolding.classes.template import Template
-
-class Path:
-	def __init__(self):
-		print "path"
+from scaffolding.classes.util import *
 
 class Scaffolding:
 	def __init__(self, type):
-		#self.type = raw_input("Choose type (path|module): ")
-
 		self.type = type
 
 		if self.type == 'module':

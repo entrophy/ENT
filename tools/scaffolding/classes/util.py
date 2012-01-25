@@ -4,10 +4,10 @@ import string
 import sys
 
 def base():
-	result = os.path.abspath(inspect.getfile(inspect.currentframe()))
-	result = result.replace("/scaffolding", "")
+	return os.path.abspath(inspect.getfile(inspect.currentframe())).replace("/scaffolding", "")
 
-	return result
+def root():
+	return os.path.abspath(os.path.realpath(inspect.getfile(inspect.currentframe()))).replace('/tools/scaffolding/classes/util.py', '');
 
 def module_base():
 	return "app/code/modules"	
@@ -31,8 +31,17 @@ def mkdir(path):
 				part = part + "/" + x
 			else:
 				part = x
-				
-			path = part+"/"
 			
+			path = part+"/"
+		
 			if os.path.isdir(path) == False:
 				os.mkdir(path)
+
+def prompt(prompt):
+    while True:
+        ok = raw_input(prompt)
+        if ok in ('', 'y', 'ye', 'yes'):
+            return True
+        if ok in ('!', 'n', 'no', 'nop', 'nope'):
+            return False
+        print 'Please type either yes or no (Y/N): '

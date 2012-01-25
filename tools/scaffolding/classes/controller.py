@@ -15,15 +15,17 @@ class Controller:
 		self.actions = raw_input("Actions (e.g. view, edit, save): ")
 		print ""
 
+		self.path = self.path.replace('_', '/')
 		self.actions = self.actions.replace(' ', '')
 
-		self.template_controller = Template('scaffolding/templates/controller/controller.txt')
-
 		self.buildController()
-		self.buildTemplate()
-		print ""
+
+		for action in self.actions.split(','):
+			self.buildView(action)
+			self.buildTemplate(action)
 
 	def buildController(self):
+		
 		dest_file = self.get_dest_file()
 		dest_path = self.get_dest_path()
 
@@ -32,35 +34,102 @@ class Controller:
 		else:
 			dest_path = controller_base()+'/'+self.get_section()
 
-		mkdir(dest_path)
+		controller_path = dest_path+"/"+dest_file+'Controller.php'
 
-		data = {
-			"{{class_path}}": self.get_class_path(),
-			"{{section}}": self.get_section(),
-			"{{actions}}": self.get_actions()
-		}
+		if not os.path.isfile(controller_path):
+			template = Template('controller/controller.txt')
+			mkdir(dest_path)
 
-		self.template_controller.replace(data)
-		self.template_controller.write(dest_path+"/"+dest_file+'Controller.php')
+			data = {
+				"{{class_path}}": self.get_class_path(),
+				"{{section}}": self.get_section(),
+				"{{actions}}": self.get_actions()
+			}
 
-	def buildTemplate(self):
+			template.replace(data)
+			template.write(controller_path)
+		else:
+			f = open(controller_path, 'r+')
+			lines = f.readlines()
+			f.seek(0)
+			
+			for action in self.actions.split(','):
+				signature = "function "+action.lower()+"Action"
+				content = ''.join(lines)
+
+				if not signature in content:
+					template_action = Template('controller/action.txt')
+					template_action.replace({
+						'{{action}}': action
+					})
+
+					lines.insert(-3, template_action.get_content())
+
+					print 'Action "'+action+'Action" added to "'+controller_path+'"'
+
+			f.writelines(lines)
+
+			f.close()
+
+		print ""
+
+	def buildView(self, action):
 		dest_file = self.get_dest_file()
 		dest_path = self.get_dest_path()
-
+		action = string.capwords(action)
+		
 		if dest_path != '':
-			dest_path = template_base()+'/'+self.get_section().lower()+'/'+dest_path.lower()
+			dest_path = view_base()+'/'+self.get_section()+'/'+dest_path+'/'+dest_file
 		else:
-			dest_path = template_base()+'/'+self.get_section().lower()
+			dest_path = view_base()+'/'+self.get_section()+'/'+dest_file
 
-		mkdir(dest_path)
+		view_path = dest_path+'/'+action+'.php'
 
-		data = {
-			"{{path}}": self.path
-		}
+		if prompt('Do you want to build the view "'+view_path+'" (Y/N): '):
+			template= Template('controller/view.txt')
+			
+			mkdir(dest_path)
+			
+			data = {
+				"{{class_path}}": self.get_class_path()+'_'+action,
+				"{{section}}": self.get_section()
+			}
 
-		self.template_controller.replace(data)
-		self.template_controller.write(dest_path+"/"+dest_file+'.phtml')
+			template.replace(data)
+			template.write(view_path)
+		else:
+			print view_path+' - Not written.'
 
+		print ""
+				
+	def buildTemplate(self, action):
+		dest_file = self.get_dest_file().lower()
+		dest_path = self.get_dest_path().lower()
+		section = self.get_section().lower()
+		action = action.lower()
+		
+		if dest_path != '':
+			dest_path = template_base()+'/'+self.section+'/'+dest_path+'/'+dest_file
+		else:
+			dest_path = template_base()+'/'+self.section+'/'+dest_file
+
+		template_path = dest_path+'/'+action+'.phtml'
+
+		if prompt('Do you want to build the template "'+template_path+'" (Y/N): '):
+			template = Template('controller/template.txt')
+			
+			mkdir(dest_path)
+			
+			data = {
+				"{{template_path}}": section+'/'+self.get_class_path().replace('_', '/').lower()+'/'+action
+			}
+
+			template.replace(data)
+			template.write(template_path)
+		else:
+			print template_path+' - Not written.'
+
+		print ""
 
 	def get_dest_file(self):
 		dest_file = self.path
@@ -78,7 +147,7 @@ class Controller:
 		dest_path = ' '.join(dest_path)
 		dest_path = string.capwords(dest_path)
 		dest_path = dest_path.replace(' ', '/')
-
+		
 		return dest_path
 
 	def get_class_path(self):
@@ -86,13 +155,13 @@ class Controller:
 		class_path = class_path.replace('/', ' ')
 		class_path = string.capwords(class_path)
 		class_path = class_path.replace(' ', '_')
-
+		
 		return class_path
 
 	def get_section(self):
 		section = self.section
 		section = string.capwords(section)
-
+		
 		return section
 
 	def get_actions(self):
@@ -101,17 +170,19 @@ class Controller:
 
 		result = ''
 
-		count = len(actions)
-		x = 1;
 		for action in actions:
-			if x != 1:
-				result += "\t"
-				
-			result += "public function "+action+"Action() {\r\n\r\n \t}"
-
-			if x != count:
-				result += "\r\n\r\n"
-
-			x += 1
+			result += self.get_action(action)
 
 		return result
+
+	def get_action(self, action):
+		template = Template('controller/action.txt')
+
+		data = {
+			"{{action}}": action.lower()
+		}
+
+		template.replace(data)
+
+		return template.get_content()
+		

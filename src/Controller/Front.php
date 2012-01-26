@@ -114,7 +114,6 @@ final class ENT_Controller_Front {
 					$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
 				}
 			
-				#die(":D");
 				$this->response->send();
 			}
 		} else {

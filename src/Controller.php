@@ -1,6 +1,7 @@
 <?php
 abstract class ENT_Controller extends ENT_Controller_Abstract {
 	protected $frontController;
+	protected $type = 'mvc';
 	private $request;
 	private $request_cache;
 	private $response;

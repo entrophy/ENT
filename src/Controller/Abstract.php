@@ -1,5 +1,11 @@
 <?php
 abstract class ENT_Controller_Abstract {
+	protected $type;
+
+	public function getType() {
+		return $this->type;
+	}
+
 	public function init() {
 	
 	}

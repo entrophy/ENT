@@ -81,7 +81,8 @@ class ENT_Module_DAO {
 		if (is_array($data)) {
 			$qb->setCondition($data);
 		} else {
-			$qb->setCondition(array('id', $data));
+			$qb->setCondition('id = :id');
+			$qb->bindParam('id', $data);
 		}
 		
 		$result = $qb->execute();

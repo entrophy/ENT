@@ -279,9 +279,13 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	
 	public function toArray() {
+		if (!$this->built) {
+			$this->build();
+		}
+		
 		return array_map(function ($object) {
 			return $object->toArray();
-		}, $this->getObjects());
+		}, $this->objects);
 	}
 	
 	public function toJSON() {
@@ -327,6 +331,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
  	
  	protected function beforeBuild() {
  	
+ 	}
+ 	
+ 	public function isBuilt() {
+ 		return $this->built;
  	}
  	
  	public function build($reset = false) {

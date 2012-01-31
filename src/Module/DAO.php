@@ -69,7 +69,7 @@ class ENT_Module_DAO {
 		}
 		
 		$result = $qb->execute();
-		$data = $this->database->getArray($result);
+		$data = $result[0];
 		
 		return $data;
 	}

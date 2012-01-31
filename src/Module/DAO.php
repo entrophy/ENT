@@ -62,10 +62,10 @@ class ENT_Module_DAO {
 		$qb = $this->database->queryBuilder();
 		$qb->setTable(static::$table);
 		$qb->setFields(static::$fields);
-		$qb->addCondition($data);
+		$qb->setCondition($data);
 		
 		if ($this->load_limit) {
-			$qb->setAmmount($this->load_limit);
+			$qb->setAmount($this->load_limit);
 		}
 		
 		$result = $qb->execute();

@@ -79,9 +79,9 @@ class ENT_Module_DAO {
 		$qb->setType('delete');
 		
 		if (is_array($data)) {
-			$qb->addCondition($data);
+			$qb->setCondition($data);
 		} else {
-			$qb->addCondition("id = $data");
+			$qb->setCondition(array('id', $data));
 		}
 		
 		$result = $qb->execute();

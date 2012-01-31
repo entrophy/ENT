@@ -22,6 +22,15 @@ class ENT_Module_ValueObject {
 		}
 	}
 	
+	public function whitelist($values) {
+		foreach ($values as $key => $value) {
+			if (!property_exists($this, $key)) {
+				unset($values[$key]);
+			}
+		}
+		return $values;
+	}
+	
 	public function getValues() {
 		$values = get_object_vars($this);
 		return $values;

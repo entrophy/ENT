@@ -26,10 +26,9 @@ abstract class ENT_Module {
 	}
 	
 	public function save($values) {	
+		$values = $this->valueObject->whitelist($values);
+		$this->valueObject->load($values);
 		$id = $this->dao->save($this->getID(), $values);
-		if ($this->valueObject) {
-			$this->valueObject->load($values);
-		}
 		
 		if (!$this->getID()) {
 			$this->valueObject->id = $id;

@@ -69,12 +69,14 @@ class ENT_Router {
 		$controller = $request->getController();
 		$controller_name = str_replace("_", "/", $controller);
 		$action = $request->getAction();
+		$method = $request->getMethod();
 		
 		$view = $path = $template = implode("/", array($section, $controller_name, $action));;
 		$full = implode("/", array($section, $controller, $action));
 		$traversable = str_replace("_", "/", $full);
 		
 		$response = array(
+			"method" => $method,
 			"path" => $path,
 			"section" => $section, 
 			"controller" => $controller, 

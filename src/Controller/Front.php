@@ -12,6 +12,12 @@ final class ENT_Controller_Front {
 	private $layout_file = null;
 	private $view;	
 	private $header;
+	private $REST_to_CRUD = array(
+		'GET' => 'read',
+		'PUT' => 'update',
+		'POST' => 'create',
+		'DELETE' => 'delete'
+	);
 	
 	public function __construct() {
 		$this->request = new ENT_Request();
@@ -56,10 +62,14 @@ final class ENT_Controller_Front {
 		if ($controller = ENT::getController($match->section.'/'.$match->controller)) {
 			$controller->setFrontController($this)
 						  ->setRequest($request)
-						  ->setRequestCache($request_cache)
 						  ->setResponse($this->response)
-						  ->setHeader($header)
 						  ->init();
+						  
+			if ($controller->getType() == 'MVC') {
+				$controller->setHeader($header);
+			} else {
+				#echo $request->getMethod();
+			}
 		
 			Entrophy_Profiler::startStep('beforeAction');
 				$controller->_beforeAction();
@@ -70,10 +80,16 @@ final class ENT_Controller_Front {
 					$this->processLayout($match);
 				Entrophy_Profiler::stopStep();
 			
-				$controller->setLayoutObject($this->layout);
-				$controller->_afterTemplateAction();
+				if ($this->layout) {
+					$controller->setLayoutObject($this->layout);
+					$controller->_afterTemplateAction();
+				}
 		
-				$action = $match->action."Action";
+				if ($controller->getType() == 'REST') {
+					$action = $this->REST_to_CRUD[$request->getMethod()]."Action";
+				} else {
+					$action = $match->action."Action";
+				}
 		
 				if (preg_match('/^([0-9]+)/ism', $action)) {
 					$action = "_".$action;

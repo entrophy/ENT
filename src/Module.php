@@ -5,6 +5,7 @@ abstract class ENT_Module {
 	protected $dao;
 	protected $valueObject;
 	protected $id;
+	protected $reload_on_save = false;
 	
 	public $exists = false;
 	public function __construct() {
@@ -24,14 +25,21 @@ abstract class ENT_Module {
 		return ($obj && get_class($this) == get_class($obj) && $this->getID() == $obj->getID());
 	}
 	
-	public function save($data) {
-		$id = $this->dao->save($this->getID(), $data);
-		if ($this->getID()) {
-			$id = $this->getID();
+	public function save($values) {	
+		$id = $this->dao->save($this->getID(), $values);
+		if ($this->valueObject) {
+			$this->valueObject->load($values);
 		}
 		
-		$load_class = $class = get_class($this).'_Load';
-		$this->infuse($load_class::factory($id, $load_class::ID, false));
+		if (!$this->getID()) {
+			$this->valueObject->id = $id;
+			$this->id = $id;
+		}
+		
+		if ($this->reload_on_save) {
+			$load_class = $class = get_class($this).'_Load';
+			$this->infuse($load_class::factory($id, $load_class::ID, false));
+		}
 	}
 	
 	public function delete() {

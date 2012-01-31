@@ -38,9 +38,18 @@ abstract class ENT_Module {
 		$this->dao->delete($this->getID());
 	}
 	
+	public function toArray() {
+		return $this->valueObject->getValues();
+	}
+	
+	public function toJSON() {
+		return json_encode($this->toArray());
+	}
+	
 	public function setAdditional($object) {
 	
 	}
+	
 	public function infuse($data) {
 		if (is_array($data)) {
 			$this->valueObject->load($data);

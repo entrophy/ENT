@@ -15,9 +15,9 @@ class ENT_Module_ValueObject {
 	}
 	
 	public function load(array $data) {
-		foreach ($data as $key => $dataItem) {	
+		foreach ($data as $key => $item) {	
 			if (property_exists($this, $key)) {
-				$this->$key = $dataItem;
+				$this->$key = $item;
 			}
 		}
 	}

@@ -283,9 +283,12 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 			$this->build();
 		}
 		
-		return array_map(function ($object) {
-			return $object->toArray();
-		}, $this->objects);
+		if (count($this->objects)) {
+			return array_map(function ($object) {
+				return $object->toArray();
+			}, $this->objects);
+		}
+		return array();
 	}
 	
 	public function toJSON() {

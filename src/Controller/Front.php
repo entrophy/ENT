@@ -99,7 +99,6 @@ final class ENT_Controller_Front {
 					$controller->$action();
 				Entrophy_Profiler::stopStep();
 	
-				
 				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
 					Entrophy_Profiler::startStep('renderView');
 						$content = $this->processView($match);

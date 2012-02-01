@@ -136,7 +136,7 @@ final class ENT_Controller_Front {
 			if ($this->router->getDefault() && $this->router->getDefault() != $request->getPath()) {
 				$this->redirect($this->router->getDefault());
 			} else {		
-				echo "unable to load controller: ".$section_name.'/'.$controller_name."<br />\n";
+				throw new ENT_Exception("Unable to load controller: ".$section_name.'/'.$controller_name);
 			}
 		}
 	}

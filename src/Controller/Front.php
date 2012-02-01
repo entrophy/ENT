@@ -100,7 +100,7 @@ final class ENT_Controller_Front {
 										Entrophy_Profiler::stopStep();
 									}
 								} else {
-									echo "unable to load view: ".$view_id."<br />\n";
+									#echo "unable to load view: ".$view_id."<br />\n";
 								}
 							}
 
@@ -110,7 +110,7 @@ final class ENT_Controller_Front {
 									$this->template->setContent($view);
 									$this->template->setHeader($header);
 								} elseif ($this->renderLayout) {
-									echo "unable to find layout template:".$this->layout."<br />\n";
+									#echo "unable to find layout template:".$this->layout."<br />\n";
 								}
 					
 								if ($this->renderLayout && $this->template) {
@@ -148,7 +148,7 @@ final class ENT_Controller_Front {
 			if ($this->router->getDefault() && $this->router->getDefault() != $request->getPath()) {
 				$this->redirect($this->router->getDefault());
 			} else {		
-				echo "unable to load controller: ".$section_name.'/'.$controller_name."<br />\n";
+				#echo "unable to load controller: ".$section_name.'/'.$controller_name."<br />\n";
 			}
 		}
 	}

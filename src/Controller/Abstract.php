@@ -1,5 +1,14 @@
 <?php
 abstract class ENT_Controller_Abstract {
+	protected $type;
+	protected $frontController;
+	protected $request;
+	protected $response;
+
+	public function getType() {
+		return $this->type;
+	}
+
 	public function init() {
 	
 	}
@@ -12,6 +21,27 @@ abstract class ENT_Controller_Abstract {
 	}
 	public function _afterTemplateAction() {
 	
+	}
+	
+	public function setFrontController(ENT_Controller_Front $frontController) {
+		$this->frontController = $frontController;
+		return $this;
+	}
+	
+	public function setRequest(ENT_Request $request) {
+		$this->request = $request;
+		return $this;
+	}
+	protected function getRequest() {
+		return $this->request;
+	}
+	
+	public function setResponse(ENT_Response $response) {
+		$this->response = $response;
+		return $this;
+	}
+	public function getResponse() {
+		return $this->response;
 	}
 }
 ?>

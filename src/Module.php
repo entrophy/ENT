@@ -5,6 +5,7 @@ abstract class ENT_Module {
 	protected $dao;
 	protected $valueObject;
 	protected $id;
+	protected $reload_on_save = false;
 	
 	public $exists = false;
 	public function __construct() {
@@ -24,23 +25,38 @@ abstract class ENT_Module {
 		return ($obj && get_class($this) == get_class($obj) && $this->getID() == $obj->getID());
 	}
 	
-	public function save($data) {
-		$id = $this->dao->save($this->getID(), $data);
-		if ($this->getID()) {
-			$id = $this->getID();
+	public function save($values) {	
+		$values = $this->valueObject->whitelist($values);
+		$this->valueObject->load($values);
+		$id = $this->dao->save($this->getID(), $values);
+		
+		if (!$this->getID()) {
+			$this->valueObject->id = $id;
+			$this->id = $id;
 		}
 		
-		$load_class = $class = get_class($this).'_Load';
-		$this->infuse($load_class::factory($id, $load_class::ID, false));
+		if ($this->reload_on_save) {
+			$load_class = $class = get_class($this).'_Load';
+			$this->infuse($load_class::factory($id, $load_class::ID, false));
+		}
 	}
 	
 	public function delete() {
 		$this->dao->delete($this->getID());
 	}
 	
+	public function toArray() {
+		return $this->valueObject->getValues();
+	}
+	
+	public function toJSON() {
+		return json_encode($this->toArray());
+	}
+	
 	public function setAdditional($object) {
 	
 	}
+	
 	public function infuse($data) {
 		if (is_array($data)) {
 			$this->valueObject->load($data);

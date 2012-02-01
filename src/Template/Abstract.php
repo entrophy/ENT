@@ -33,49 +33,8 @@ abstract class ENT_Template_Abstract {
 		return ENT::app()->getFrontController()->getRequest();
 	}
 	
-	public function generateCSSURL($path) {
-		return $this->getBasePath().'app/design/css/'.$path.'.css';
-	}
-	public function generateIMGURL($path) {
-		return $this->getBasePath().'app/design/image/'.$path;
-	}
-	public function generateJSURL($path) {
-		if (stristr($path, 'http://')) {
-			return $path;
-		}
-		return $this->getBasePath().'scripts/'.$path;
-	}
-	
 	public function generateURL($path) {
 		return $this->getBasePath().$path;
-	}
-	
-	public function changeURL(array $params) {
-		$url = $params['section'] ? $params['section'] : $this->getRequest()->getSection();
-		$url .= '/'.$params['controller'] ? $params['controller'] : $this->getRequest()->getController();
-		$url .= '/'.$params['action'] ? $params['action'] : $this->getRequest()->getAction();
-		
-		
-		foreach ($this->getRequest()->getParams() as $key => $value) {
-			foreach ($params as $key => $value) {
-				if ($key != 'controller' || $key != 'section' || $key != 'action') {
-				
-				}
-			}			
-		}		
-		return $this->url($url);
-	}
-	
-	public function createURL(string $section, string $controller, string $action, array $params = NULL) {
-		$url = $section.'/'.$controller.'/'.$action;
-		
-		if ($params) {
-			foreach ($params as $key => $param) {
-				$url .= '/'.$key.'/'.$param;
-			}
-		}
-		
-		return $this->genererateURL($url);
 	}
 	
 	public function __($key) {
@@ -91,17 +50,6 @@ abstract class ENT_Template_Abstract {
 		return $name;
 	}
 	
-	public function langUrl($path) {
-		$site = ENT::registry('site');
-		$path = $this->prepareUrl($path);
-		
-		if ($site) {			
-			$url = $site->getLang().'/';
-			$url .= $path;
-		}
-		
-		return $this->url($url);
-	}
 	public function prepareUrl($path) {
 		if (substr($path, 0, 1) == '/') {
 			$path = substr_replace($path, '', 0, 1);

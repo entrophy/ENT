@@ -17,14 +17,14 @@ class ENT_Module_DAO {
 	public static $table = '';
 	public static $fields = '';
 	public function save($match, $data, $check = false) {
-		$builder = $this->database->queryBuilder();
-		$builder->setTable(static::$table);
-		$builder->setData($data);
+		$qb = $this->database->queryBuilder();
+		$qb->setTable(static::$table);
+		$qb->setValues($data);
 		
 		if ($match) {		
-			$builder->setType('update');
+			$qb->setType('update');
 			if (is_array($match)) {
-				$builder->addCondition($match);
+				$qb->addCondition($match);
 				
 				if ($check) {
 					$keys = array_keys($data);
@@ -37,18 +37,18 @@ class ENT_Module_DAO {
 					
 					if (!$this->database->getRows($result)) {
 						$match = false;
-						$builder->setType('insert');
+						$qb->setType('insert');
 					}
 				}
 			} else {
-				$builder->addCondition("id = $match");
+				$qb->addCondition("id = $match");
 				$id = $match;
 			}
 		} else {
-			$builder->setType('insert');
+			$qb->setType('insert');
 		}
 		
-		$result = $builder->execute();
+		$result = $qb->execute();
 
 		if (!$match) {
 			$id = $this->database->insertID();
@@ -59,32 +59,33 @@ class ENT_Module_DAO {
 	
 	protected $load_limit = 1;
 	public function load($data) {
-		$builder = $this->database->queryBuilder();
-		$builder->setTable(static::$table);
-		$builder->setFields(static::$fields);
-		$builder->addCondition($data);
+		$qb = $this->database->queryBuilder();
+		$qb->setTable(static::$table);
+		$qb->setFields(static::$fields);
+		$qb->setCondition($data);
 		
 		if ($this->load_limit) {
-			$builder->setAmmount($this->load_limit);
+			$qb->setAmount($this->load_limit);
 		}
 		
-		$result = $builder->execute();
-		$data = $this->database->getArray($result);
+		$result = $qb->execute();
+		$data = $result[0];
 		
 		return $data;
 	}
 	public function delete($data) {
-		$builder = $this->database->queryBuilder();
-		$builder->setTable(static::$table);
-		$builder->setType('delete');
+		$qb = $this->database->queryBuilder();
+		$qb->setTable(static::$table);
+		$qb->setType('delete');
 		
 		if (is_array($data)) {
-			$builder->addCondition($data);
+			$qb->setCondition($data);
 		} else {
-			$builder->addCondition("id = $data");
+			$qb->setCondition('id = :id');
+			$qb->bindParam('id', $data);
 		}
 		
-		$result = $builder->execute();
+		$result = $qb->execute();
 	}
 }
 ?>

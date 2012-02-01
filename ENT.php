@@ -23,7 +23,12 @@ final class ENT {
 		if (self::getEnvironment() && self::getEnvironment()->getType() == 'development') {
 			Entrophy_Profiler::start();
 		}
-		self::app()->getFrontController()->dispatch();
+		
+		try {
+			self::app()->getFrontController()->dispatch();
+		} catch (ENT_Exception $e) {
+			echo "There was an error in running the application: ".$e->getMessage();
+		}
 		return $this;
 	}
 	

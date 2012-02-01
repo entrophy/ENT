@@ -8,6 +8,7 @@ class ENT_Request {
 	private $previous;
 	private $full = false;
 	private $debug = array();
+	private $method;
 	
 	public function addDebug($value) {
 		array_push($this->debug, $value);
@@ -27,6 +28,8 @@ class ENT_Request {
 				$_GET = array_merge($_GET, $query);
 			}
 		}
+
+		$this->method = $_SERVER['REQUEST_METHOD'];
 
 		if (count($_GET)) {
 			foreach ($_GET as $key => $value) {
@@ -91,6 +94,9 @@ class ENT_Request {
 		return $url[0];
 	}
 	
+	public function getMethod() {
+		return $this->method;
+	}
 	public function getPath() {
 		return $this->path;
 	}

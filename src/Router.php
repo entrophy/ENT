@@ -55,7 +55,7 @@ class ENT_Router {
 	
 	public function match($request) {
 		if ($request->getPath() != $this->_default) {
-			if ($rewrite = $this->rewrite('/'.$request->getBaseUrl())) {
+			if ($rewrite = $this->rewrite($request->getBaseUrl())) {
 				$request->addDebug('router-rw from: /'.$request->getBaseUrl().' to: '.$rewrite);
 				$request->init($rewrite);
 			}
@@ -67,23 +67,27 @@ class ENT_Router {
 		
 		$section = $request->getSection();
 		$controller = $request->getController();
-		$action = $view = $template = $request->getAction();
+		$controller_name = str_replace("_", "/", $controller);
+		$action = $request->getAction();
+		$method = $request->getMethod();
+		
+		$view = $path = $template = implode("/", array($section, $controller_name, $action));;
 		$full = implode("/", array($section, $controller, $action));
 		$traversable = str_replace("_", "/", $full);
 		
 		$response = array(
+			"method" => $method,
+			"path" => $path,
 			"section" => $section, 
 			"controller" => $controller, 
 			"action" => $action, 
 			"layout" => (string)$layout, 
 			"view" => $view, 
 			"template" => $template, 
-			"cache" => $cache
+			"cache" => $cache,
+			"found" => (object) $this->find($traversable, array('layout', 'minify', 'view', 'template'))
 		);
-
-		$find = $this->find($traversable, array('layout', 'minify'));
-		$response = array_merge($response, array_filter($find));
-		
+	
 		return (object) $response;
 	}
 	

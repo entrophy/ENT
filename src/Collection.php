@@ -4,6 +4,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	protected $items;
 	protected $totalCount;
 	protected $queryBuilder;
+	protected $qb;
 	protected $size;
 	protected $query;
 	
@@ -19,6 +20,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		}
 		$this->database = ENT::app()->getDatabase();
 		$this->queryBuilder = $this->database->queryBuilder();
+		$this->qb = $this->queryBuilder;
 		$this->init();
 	}
 	
@@ -262,7 +264,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	public function slice($index, $length = null) {
 		$result = array_slice($this->objects, $index, $length);
 		if ($length == 1) {
-			return $result;
+			return $result[0];
 		} else {		
 			$class = get_called_class();
 			return new $class($result);
@@ -274,6 +276,23 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	public function getQuery() {
 		return $this->query;
+	}
+	
+	public function toArray() {
+		if (!$this->built) {
+			$this->build();
+		}
+		
+		if (count($this->objects)) {
+			return array_map(function ($object) {
+				return $object->toArray();
+			}, $this->objects);
+		}
+		return array();
+	}
+	
+	public function toJSON() {
+		return json_encode($this->toArray());
 	}
 	
 	public function at($index) {
@@ -317,6 +336,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
  	
  	}
  	
+ 	public function isBuilt() {
+ 		return $this->built;
+ 	}
+ 	
  	public function build($reset = false) {
 		if (!$this->built || $reset) {
 			$this->beforeBuild();
@@ -325,24 +348,15 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 				$items = $this->fetch();
 			}
 
-			$object_static = ENT::getStatic($this->key);
 			if (count($items)) {
-				if ($object_static::$version == '2.0') {
-					$object_load = $object_static.'_Load';
-			
-					foreach ($items as $item) {
-						$object = $object_static::load($item, $object_load::DATA);
+				$object_static = ENT::getStatic($this->key);
+				$object_load = $object_static.'_Load';
+		
+				foreach ($items as $item) {
+					$object = $object_static::load($item, $object_load::DATA);
 
-						$this->objects[] = $object;
-					}				
-				} else {
-					foreach ($items as $item) {
-						$object = ENT::getModule($this->key);
-						$object->load($item, $object_static::LOAD_DATA);
-
-						$this->objects[] = $object;
-					}
-				}
+					$this->objects[] = $object;
+				}				
 			}
 		}
 

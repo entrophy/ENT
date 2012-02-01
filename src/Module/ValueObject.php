@@ -15,11 +15,20 @@ class ENT_Module_ValueObject {
 	}
 	
 	public function load(array $data) {
-		foreach ($data as $key => $dataItem) {	
+		foreach ($data as $key => $item) {	
 			if (property_exists($this, $key)) {
-				$this->$key = $dataItem;
+				$this->$key = $item;
 			}
 		}
+	}
+	
+	public function whitelist($values) {
+		foreach ($values as $key => $value) {
+			if (!property_exists($this, $key)) {
+				unset($values[$key]);
+			}
+		}
+		return $values;
 	}
 	
 	public function getValues() {

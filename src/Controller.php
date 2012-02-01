@@ -1,9 +1,6 @@
 <?php
 abstract class ENT_Controller extends ENT_Controller_Abstract {
-	protected $frontController;
-	private $request;
-	private $request_cache;
-	private $response;
+	protected $type = 'MVC';	
 	private $header;
 	private $layout;
 		
@@ -16,35 +13,6 @@ abstract class ENT_Controller extends ENT_Controller_Abstract {
 			session_start();
 			ENT::register('session_start', true);
 		}
-	}
-	
-	public function setFrontController(ENT_Controller_Front $frontController) {
-		$this->frontController = $frontController;
-		return $this;
-	}
-	
-	public function setRequest(ENT_Request $request) {
-		$this->request = $request;
-		return $this;
-	}
-	public function getRequest() {
-		return $this->request;
-	}
-	
-	public function setRequestCache(ENT_Request_Cache $request_cache) {
-		$this->request_cache = $request_cache;
-		return $this;
-	}
-	public function getRequestCache() {
-		return $this->request_cache;
-	}
-	
-	public function setResponse(ENT_Response $response) {
-		$this->response = $response;
-		return $this;
-	}
-	public function getResponse() {
-		return $this->response;
 	}
 	
 	public function setHeader(ENT_Template_Header $header) {
@@ -66,8 +34,8 @@ abstract class ENT_Controller extends ENT_Controller_Abstract {
 	public function setLayout($layout) {
 		$this->frontController->setLayout($layout);
 	}
-	public function getTemplate() {
-		return $this->frontController->getTemplate();
+	public function getLayout() {
+		return $this->frontController->getLayout();
 	}
 	
 	public function url($path) {

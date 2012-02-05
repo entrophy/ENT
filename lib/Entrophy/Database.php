@@ -63,8 +63,11 @@ class Entrophy_Database {
 	public function queryBuilder() {
 		return new Entrophy_Database_QueryBuilder($this);
 	}
+	public function qb() {
+		return $this->queryBuilder();
+	}
 	public function crud() {
-		return new Entrophy_Database_CRUD($this);
+		return Entrophy_Database_CRUD::getInstance();
 	}
 	
 	public function insertID() {
@@ -114,6 +117,13 @@ class Entrophy_Database {
 		$name = $this->field($name);
 	}
 	
+	public function wrapValue($value) {
+		if (!is_numeric($value)) {
+			$value = "'".$value."'";
+		}
+		return $value;
+	}
+	
 	public function prepare($query) {
 		$this->statement = $this->pdo->prepare($query);
 		
@@ -145,7 +155,7 @@ class Entrophy_Database {
 				$this->insertID = $this->pdo->lastInsertID();
 
 				$result = ($type == 'SELECT') ? $this->statement->fetchAll(PDO::FETCH_ASSOC) : array();
-
+				
 				if (strstr($this->lastQuery, 'LIMIT')) {
 					$_statement = $this->pdo->prepare('SELECT FOUND_ROWS() as rows');
 					$_statement->execute();

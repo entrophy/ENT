@@ -1,20 +1,16 @@
 <?php
 class Entrophy_Database_QueryBuilder {
 	private $type = "SELECT";
-	protected $table;
-	protected $tableAlias;
-	protected $fields = '*';
-	private $left_joins;
+	private $table;
+	private $fields = '*';
 	private $values;
 	private $conditions;
 	private $params;
-	private $havings;
-	protected $groups;
-	protected $orders;
-	protected $amount;
-	protected $offset = 0;
+	private $orders = array();
+	private $amount;
+	private $offset = 0;
 
-	protected $database;
+	private $database;
 	private $query;
 	
 	public function __construct($database) {
@@ -25,18 +21,24 @@ class Entrophy_Database_QueryBuilder {
 		$this->type = strtoupper($type);
 		return $this;
 	}
-	public function setTable($table, $alias = null) {
-		$this->table = $table;
-		$this->tableAlias = $alias;
-		return $this;
+	public function type($type) {
+		return $this->setType($type);
 	}
 	
-	public function addLeftJoin($table, $condition) {
-		$this->left_joins[] = array($table, $condition);
+	public function setTable($table) {
+		$this->table = $table;
+		return $this;
+	}
+	public function table($table) {
+		return $this->setTable($table);
+	}
+	public function from($table) {
+		return $this->setTable($table);
 	}
 	
 	public function resetFields() {
 		$this->fields = '';
+		return $this;
 	}
 	public function setFields($fields) {
 		if (is_string($fields)) {
@@ -45,6 +47,9 @@ class Entrophy_Database_QueryBuilder {
 			$this->fields = $fields;
 		}
 		return $this;
+	}
+	public function fields($fields) {
+		return $this->setFields($fields);
 	}
 	
 	public function addField($field) {
@@ -63,62 +68,84 @@ class Entrophy_Database_QueryBuilder {
 		$this->values = $values;
 		return $this;
 	}
+	public function values($values) {
+		return $this->setValues($values);
+	}
 	
-	public function newCondition($params, $weight = 0) {
-		return new Entrophy_Database_QueryBuilder_Condition($params, $weight);
+	public function newCondition($params, $remap = true) {
+		return new Entrophy_Database_QueryBuilder_Condition($params, $remap, $this);
 	}
 	
 	public function setCondition($condition, $weight = 0, $key = null) {
-		$condition = is_object($condition) || is_array($condition) ? $condition : $this->newCondition($condition, $weight);
-
-		$key ? $this->conditions[$key] = array($condition, $weight) : $this->conditions[] = array($condition, $weight);
+		// if $condition is not a condition object or an array of condition objects, create new condition object
+		if (!is_object($condition) && !(is_array($condition) && is_object($condition[0]))) {
+			$condition = $this->newCondition($condition);
+		}
 		
-		return $this;
-	}
-	public function removeCondition($key) {
-		$this->conditions[$key] = null;
-		unset($this->conditions[$key]);
-	}
-	
-	public function addHaving($having, $glue = 'AND', $key = null) {
-		if (is_array($having)) {
-			foreach ($having as $field => $value) {
-				$_having = array("$field = 'mysql_real_escape_string($value)'", $glue);
-
-				$key ? $this->havings[$key] = $_having : $this->havings[] = $_having;
-			}
+		$condition = array($condition, $weight);
+		if ($key) {
+			$this->conditions[$key] = $condition;
 		} else {
-			$key ? $this->havings[$key] = array($having, $glue) : $this->havings[] = array($having, $glue);
+			$this->conditions[] = $condition;
 		}
 		
 		return $this;
 	}
-	public function removeHaving($key) {
-		$this->havings[$key] = null;
-		unset($this->havings[$key]);
+	
+	public function where($params) {
+		return $this->setCondition($params);
 	}
 	
-	public function addGroupBy($group, $key = null) {
-		$key ? $this->groups[$key] = array($group) : $this->groups[] = array($group);
+	public function removeCondition($key) {
+		$this->conditions[$key] = null;
+		unset($this->conditions[$key]);
 		return $this;
 	}
-	public function removeGroupBy($key) {
-		$this->groups[$key] = null;
-		unset($this->groups[$key]);
-	}
 
-	public function addOrder($order, $dir = 'asc', $key = null) {
-		$key ? $this->orders[$key] = array($order, $dir) : $this->orders[] = array($order, $dir);
+	public function addOrder($name, $dir = 'asc', $key = null) {	
+		$order = (object) array('name' => $name, 'dir' => $dir);
+		if ($key) {
+			$this->orders[$key] = $order;
+		} else {
+			$this->orders[] = $order;
+		}
+		unset($order);
+		return $this;
 	}
 	public function removeOrder($key) {
 		$this->orders[$key] = null;
 		unset($this->orders[$key]);
+		return $this;
+	}
+	public function order() {
+		$args = func_get_args();
+		if (is_array($args[0])) {
+			foreach ($args as $arg) {
+				$this->addOrder($arg[0], $arg[1], $arg[0]);
+			}
+		} else {
+			$i = 0;
+			foreach ($args as $arg) {
+				if (($i % 2) === 0) {
+					$name = $arg;
+				} else {
+					$dir = $arg;
+					$this->addOrder($name, $dir, $name);
+				}
+				
+				$i++;
+				unset($arg);
+			}
+			unset($name, $dir, $i);
+		}
+		unset($args);
+		
+		return $this;
 	}
 
 	public function bindParam($data, $value = null) {
 		if (is_array($data)) {
-			foreach ($data as $key => $value) {
-				
+			foreach ($data as $key => $value) {			
 				$this->params[$key[0] === ':' ? $key : ':'.$key] = $value;
 			}
 		} else if ($value !== null) {
@@ -130,12 +157,21 @@ class Entrophy_Database_QueryBuilder {
 		$this->amount = $amount;
 		return $this;
 	}
+	public function amount($amount) {
+		return $this->setAmount($amount);
+	}
 	public function setLimit($limit) {
+		return $this->setAmount($limit);
+	}
+	public function limit($limit) {
 		return $this->setAmount($limit);
 	}
 	public function setOffset($offset) {
 		$this->offset = $offset;
 		return $this;
+	}
+	public function offset($offset) {
+		return $this->setOffset($offset);
 	}
 	
 	private function escapeName($name) {
@@ -143,6 +179,15 @@ class Entrophy_Database_QueryBuilder {
 	}
 	private function _escapeName(&$name) {
 		$name = $this->escapeName($name);
+	}
+	private function wrapValue($value) {
+		return $this->database->wrapValue($value);
+	}
+	private function _wrapValue(&$value) {
+		$value = $this->wrapValue($value);
+	}
+	private function wrapValues($values) {
+		return implode(', ', array_map(array($this, 'wrapValue'), $values));
 	}
 	
 	private function sortConditions($a, $b) {
@@ -157,164 +202,105 @@ class Entrophy_Database_QueryBuilder {
 	}
 	
 	public function buildQuery() {
-		$query = $this->type." ";
+		$query_parts = array($this->type);
+		$db = $this->database;
 			
 		switch ($this->type) {
 			case "SELECT":
-				if (!is_array($this->fields)) {
-					$this->fields = array($this->fields);
+				if (!is_array($fields = $this->fields)) {
+					$fields = array($fields);
 				}
 
 				if ($this->amount) {
-					$query .= "SQL_CALC_FOUND_ROWS ";
+					$part = 'SQL_CALC_FOUND_ROWS ';
 				}
+				$part .= implode(', ', array_map(array($this, 'escapeName'), $fields));
 				
-				array_walk($this->fields, array($this, '_escapeName'));
-				$query .= implode(", ", $this->fields);
-				
-				$query .= " FROM ";
+				$query_parts[] = $part;
+				$query_parts[] = 'FROM';
+				unset($part);
 				break;
 			case "CREATE";
 			case "INSERT":
-				$query .= "INTO ";
+				$query_parts[] = 'INTO';
 				break;
 			case "DELETE":
-				$query .= "FROM ";
+				$query_parts[] = 'FROM';
 				break;
 			}
 		
-		if (is_array($this->table)) {
-			array_walk($this->table, array($this, '_escapeName'));
-			$query .= implode(", ", $this->table);
-		} else {
-			$query .= $this->escapeName($this->table);
-			if ($this->tableAlias) {
-				$query .= " ".$this->tableAlias;
-			}
+		if (!is_array($tables = $this->table)) {
+			$tables = array($tables);
 		}
+		$query_parts[] = implode(', ', array_map(array($this, 'escapeName'), $tables));
+			
 		
-		if (is_array($this->left_joins) && count($this->left_joins) && $this->type == "SELECT") {
-			foreach ($this->left_joins as $left_join) {
-				$query .= " LEFT JOIN `".$left_join[0]."` ON ".$left_join[1];
-			}
-		}
-		
-		if ($this->values) {
-			$count = count($this->values);
+		if ($values = $this->values) {
+			$count = count($values);
 			$x = 1;
 			switch ($this->type) {
-				case "UPDATE":
-					$query .= " SET ";
-					foreach ($this->values as $key => $value) {
-						$query .= "`".$key."` = ";
-						
-						if (!$value) {
-							$query .= "''";
-						} else if (is_numeric($value)) {
-							$query .= $value;
-						} else {
-							$query .= "'".$value."'";
-						}
-
-						if ($x != $count) {
-							$query .= ", ";
-						}
-						
-						$x++;
-					}
-					break;
-				case "CREATE";
-				case "INSERT":
-					$keys = array_keys($this->values);
-					array_walk($keys, array($this, '_escapeName'));
-				
-					$query .= ' ('.implode(', ', $keys).') VALUES (';
+				case 'UPDATE':
+					$query_parts[] = 'SET';
+					array_walk($values, function (&$value, $key) use ($db) {
+						$value = $db->field($key).' = '.$db->wrapValue($value);
+					});
 					
-					foreach ($this->values as $key => $value) {
-						if (!$value) {
-							$query .= "''";
-						} elseif (is_numeric($value)) {
-							$query .= $value;
-						} else {
-							$query .= "'".$value."'";
-						}
-						
-						if ($x != $count) {
-							$query .= ", ";
-						}
-						
-						$x++;
+					$query_parts[] = implode(', ', $values);
+					unset($values);
+					break;
+				case 'CREATE';
+				case 'INSERT':
+					if (!is_array($values[0])) {
+						$values = array($values);
 					}
 					
-					$query .= ")";
+					$keys = array_map(array($this, 'escapeName'), array_keys($values[0])); // escape field names
+					$values = array_map(array($this, 'wrapValues'), $values); // wrap string values in '' and leave numeric be			
+					$part = '('.implode(', ', $keys).') VALUES ('.implode('), (', $values).')'; // build value statement
+					
+					$query_parts[] = $part;		
+					unset($part);
 					break;
 			}
+			
+			unset($values);
 		}
 		
-		$count = count($this->conditions);
-		$x = 1;
-		if ($count && $this->type != 'INSERT' && $this->type != 'CREATE') {
-			usort($this->conditions, array($this, 'sortConditions'));
+		if (count($conditions = $this->conditions) && $this->type != 'INSERT' && $this->type != 'CREATE') {
+			usort($conditions, array($this, 'sortConditions'));
+			// turn conditions array into a forced nested array to support array of conditions in setCondition()
+			$conditions = array_map(function ($condition) {
+				return is_array($condition[0]) ? $condition[0] : array($condition[0]);
+			}, $conditions);
+			
+			$query_parts[] = 'WHERE';
 		
-			$query .= " WHERE";
-			foreach ($this->conditions as $condition) {
-				$_conditions = is_array($condition[0]) ? $condition[0] : array($condition[0]);
-
-				foreach ($_conditions as $_condition) {
-					$query .= $x != 1 ? ' AND ' : ' ';
-
-					$query .= is_object($_condition) ? "(".$_condition->getSql().")" : "(".$_condition.")";
-					
-					$x++;
-				}
+			foreach ($conditions as $condition_set) {			
+				$query_parts[] = '('.implode(') AND (', $condition_set).')';
 			}
+			unset($conditions);
 		}
 
-		if (is_array($this->groups) && ($count = count($this->groups))) {
-			$x = 1;
-			$query .= ' GROUP BY ';
-
-			foreach ($this->groups as $group) {
-				$query .= $x != $count ? $group[0].', ' : $group[0];
-
-				$x++;
-			}
-		}
-		
-		if (is_array($this->havings) && ($count = count($this->havings)) && $this->type != 'INSERT' && $this->type != 'CREATE') {
-			$query .= " HAVING ";
-			$x = 1;
-			foreach ($this->havings as $having) {
-				if ($x != 1) {
-					$query .= $having[1]." ";
-				}
-				$query .= "(".$having[0].")";
-				
-				$x++;
-			}
-		}
-
-		if (is_array($this->orders) && ($count = count($this->orders))) {
-			$x = 1;
-			$query .= ' ORDER BY ';
-
-			foreach ($this->orders as $order) {
-				$query .= $x != $count ? $order[0].' '.strtoupper($order[1]).', ' : $order[0].' '.strtoupper($order[1]);
-
-				$x++;
-			}
+		if (is_array($orders = $this->orders) && count($orders)) {
+			$query_parts[] = 'ORDER BY';
+			
+			$query_parts[] = implode(', ', array_map(function ($order) use ($db) {
+				return $db->field($order->name).' '.strtoupper($order->dir);
+			}, $orders));
+			unset($orders);
 		}
 		
 		if ($this->amount) {
-			$query .= ' LIMIT '.$this->amount;
+			$query_parts[] = 'LIMIT '.$this->amount;
 		}
 
 		if ($this->offset) {
-			$query .= ' OFFSET '.$this->offset;
+			$query_parts[] = 'OFFSET '.$this->offset;
 		}
 		
-		$query;
-
+		$query = implode(' ', $query_parts);
+		unset($query_parts);
+		unset($db);
 		return $query;
 	}
 	
@@ -322,20 +308,17 @@ class Entrophy_Database_QueryBuilder {
 		return $this->query;
 	}
 
-	private function clear() {
+	public function clear() {
 		$this->type = "SELECT";
 		$this->table = null;
 		$this->fields = '*';
-		$this->tableAlias = null;
-		$this->left_joins = array();
 		$this->conditions = array();
 		$this->params = array();
-		$this->havings = array();
 		$this->amount = null;
 		$this->offset = 0;
 		$this->orders = array();
 		$this->values = array();
-		$this->groups = null;
+		return $this;
 	}
 	
 	public function execute($type = null, $query = null, $params = null) {
@@ -347,7 +330,6 @@ class Entrophy_Database_QueryBuilder {
 		$this->database->bind($this->params);
 		
 		$result = $this->database->execute($this->type, true);
-
 		$this->clear();
 
 		return $result;

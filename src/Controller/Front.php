@@ -75,16 +75,7 @@ final class ENT_Controller_Front {
 				$controller->_beforeAction();
 			Entrophy_Profiler::stopStep();
 							
-			if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
-				Entrophy_Profiler::startStep('processLayout');
-					$this->processLayout($match);
-				Entrophy_Profiler::stopStep();
-			
-				if ($this->layout) {
-					$controller->setLayoutObject($this->layout);
-					$controller->_afterTemplateAction();
-				}
-		
+			if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {			
 				if ($controller->getType() == 'REST') {
 					$action = $this->REST_to_CRUD[$request->getMethod()]."Action";
 				} else {
@@ -98,6 +89,15 @@ final class ENT_Controller_Front {
 				Entrophy_Profiler::startStep($action);
 					$controller->$action();
 				Entrophy_Profiler::stopStep();
+				
+				Entrophy_Profiler::startStep('processLayout');
+					$this->processLayout($match);
+				Entrophy_Profiler::stopStep();
+			
+				if ($this->layout) {
+					$controller->setLayoutObject($this->layout);
+					$controller->_afterTemplateAction();
+				}
 	
 				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
 					Entrophy_Profiler::startStep('renderView');

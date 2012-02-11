@@ -66,7 +66,7 @@ class ENT_Config {
 	
 	private function parse($object) {
 		foreach ($object as $key => &$item) {
-			if ($item[0] == '@') {
+			if (is_string($item) && $item[0] == '@') {
 				if (strpos($item, '@include') === 0) {
 					$item = json_decode(file_get_contents($this->directory.'/'.substr($item, 9)));
 				} 

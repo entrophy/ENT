@@ -1,10 +1,11 @@
 <?php
 class ENT_Config {
-	protected $environment = null;
-	protected $config;
-	protected $config_cache;
-	protected $server_host;
-	protected $server_path;
+	private $environment = null;
+	private $config;
+	private $config_cache;
+	private $server_host;
+	private $server_path;
+	private $directory;
 	
 	public function __construct($file) {
 		$this->server_host = str_replace("www.", "", $_SERVER['HTTP_HOST']);
@@ -62,12 +63,29 @@ class ENT_Config {
 
 		return $value;
 	}
+	
+	private function parse($object) {
+		foreach ($object as $key => &$item) {
+			if ($item[0] == '@') {
+				if (strpos($item, '@include') === 0) {
+					$item = json_decode(file_get_contents($this->directory.'/'.substr($item, 9)));
+				} 
+			}
+			
+			if (is_object($item) || is_array($item)) {
+				$item = $this->parse($item);
+			}
+		}
+		return $object;
+	}
 
 	public function load($file) {
 		if (file_exists($file)) {
 			$json = json_decode(file_get_contents($file));
-
-			$this->config = $json;
+			$this->directory = dirname($file);
+	
+			$this->config = $this->parse($json);
+			print_r($this->config);
 			$this->config->web->path = $this->config->web->path ? : $this->server_path;
 		
 			if ($environments = $json->environments) {

@@ -168,12 +168,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		}
 	}
 	public function values($pass_parameter) {
-		$function = $pass_parameter;
-		$values = array();
-		foreach ($this->objects as $object) {
-			$values[] = call_user_func($function, $object);
-		}
-		return $values;
+		return array_map($pass_parameter, $this->objects);
 	}
 	public function each($pass_parameter) {
 		$function = $pass_parameter;

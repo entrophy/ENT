@@ -1,5 +1,5 @@
 <?php
 class {{class_path}}_Collection extends ENT_Collection {
-	protected $key = {{key}};
+	protected static $module_key = {{key}};
 }
 ?>

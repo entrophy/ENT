@@ -1,7 +1,7 @@
 <?php
 abstract class ENT_Collection implements IteratorAggregate, Countable {
 	protected $database;
-	protected $items;
+	protected $dataset;
 	protected $totalCount;
 	protected $queryBuilder;
 	protected $qb;
@@ -52,7 +52,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	
 	public function reset() {	
-		$this->items = null;
+		$this->dataset = null;
 		$this->objects = null;
 		$this->queryBuilder->unsetQuery();
 	}
@@ -61,8 +61,8 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		if (!$this->size || $recalculate) {
 			if (sizeof($this->objects)) {
 				$this->size = sizeof($this->objects);
-			} else if (sizeof($this->items)) {
-				$this->size = sizeof($this->items);
+			} else if (sizeof($this->dataset)) {
+				$this->size = sizeof($this->dataset);
 			} else {
 				$_fields = $this->queryBuilder->getFields();
 				$this->queryBuilder->setFields('count(id) as `size`');
@@ -322,7 +322,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
  	}
 
  	public function fetch() {
-		if (!$this->items) {
+		if (!$this->dataset) {
 			/*
 			#$query = $this->query = $this->queryBuilder->getQuery();
 			#$result = $this->database->execute($query);
@@ -332,9 +332,9 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 			$this->items = $this->database->resultToArray($result);
 			*/
 
-			$this->items = $this->queryBuilder->execute();
+			$this->dataset = $this->queryBuilder->execute();
 		}
-		return $this->items;
+		return $this->dataset;
 	}
  	
  	protected function beforeBuild() {
@@ -349,16 +349,16 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		if (!$this->built || $reset) {
 			$this->beforeBuild();
 			
-			if (!$items = $this->items) {
-				$items = $this->fetch();
+			if (!$dataset = $this->dataset) {
+				$dataset = $this->fetch();
 			}
 
-			if (count($items)) {
+			if (count($dataset)) {
 				$object_static = ENT::getStatic(static::$module_key);
 				$object_load = $object_static.'_Load';
 		
-				foreach ($items as $item) {
-					$object = $object_static::load($item, $object_load::DATA);
+				foreach ($dataset as $data) {
+					$object = $object_static::load($data, $object_load::DATA);
 
 					$this->objects[] = $object;
 				}				

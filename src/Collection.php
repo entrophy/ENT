@@ -106,19 +106,9 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		if (!$this->built) {
 			$this->build();
 		}
-		
-		$function = $pass_parameter;
-		$passed = array();
-		
-		foreach ($this->objects as $object) {
-			$passes = call_user_func($function, $object);
-			if ($passes) {
-				$passed[] = $object;
-			}
-		}
-		
+
 		$class = get_called_class();
-		return new $class($passed);
+		return new $class(array_filter($this->objects, $pass_parameter));
 	}
 	public function reject($pass_parameter) {
 		if (!$this->built) {

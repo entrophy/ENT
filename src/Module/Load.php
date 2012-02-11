@@ -10,7 +10,7 @@ class ENT_Module_Load {
 	const KEY = 'module/load=key';
 	
 	protected static function getCacheKey($data, $type, $object = true) {
-		return sha1(static::$module_key.((int) $object).serialize($data).$type);
+		return sha1(static::$module_key.((int) $object).(is_object($data) ? get_class($data).$data->getID() : serialize($data)).$type);
 	}
 	
 	public function clearCache($key = null) {
@@ -96,7 +96,7 @@ class ENT_Module_Load {
 	}
 	
 	protected static function type($data, $type, $dao) {
-	
+		
 	}
 }
 ?>

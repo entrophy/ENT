@@ -102,21 +102,19 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	public function select($pass_parameter) {
 		return $this->filter($pass_parameter);
 	}
-	public function filter($pass_parameter) {	
-		$function = $pass_parameter;
-		$passed = array();
-		
-		foreach ($this->objects as $object) {
-			$passes = call_user_func($function, $object);
-			if ($passes) {
-				$passed[] = $object;
-			}
+	public function filter($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
 		}
-		
+
 		$class = get_called_class();
-		return new $class($passed);
+		return new $class(array_filter($this->objects, $pass_parameter));
 	}
 	public function reject($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		$function = $pass_parameter;
 		$passed = array();
 		foreach ($this->objects as $object) {
@@ -130,6 +128,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return new $class($passed);
 	}
 	public function min($pass_parameter, $return_value = false) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		if ($return_value) {
 			$values = $this->values($pass_parameter);
 			sort($values);
@@ -149,6 +151,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		}
 	}
 	public function max($pass_parameter, $return_value = false) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		if ($return_value) {
 			$values = $this->values($pass_parameter);
 			rsort($values);
@@ -168,15 +174,24 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		}
 	}
 	public function values($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
 		return array_map($pass_parameter, $this->objects);
 	}
 	public function each($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
 		$function = $pass_parameter;
 		foreach ($this->objects as $object) {
 			$passes = call_user_func($function, $object);
 		}
 	}
 	public function find($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
 		$function = $pass_parameter;
 		foreach ($this->objects as $object) {
 			$passes = call_user_func($function, $object);
@@ -189,6 +204,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return false;
 	}
 	public function get($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		if (is_numeric($pass_parameter)) {
 			$pass_parameter = function($object) {
 				return ($object->getID() == $pass_parameter);
@@ -197,6 +216,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return $this->find($pass_parameter);
 	}
 	public function all($pass_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		$function = $pass_parameter;
 		foreach ($this->objects as $object) {
 			$passes = call_user_func($function, $object);
@@ -209,6 +232,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return true;
 	}
 	public function any($pass_parameter) {
+	if (!$this->built) {
+			$this->build();
+		}
+	
 		$function = $pass_parameter;
 		foreach ($this->objects as $object) {
 			$passes = call_user_func($function, $object);
@@ -221,6 +248,10 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return false;
 	}
 	public function includes($match_parameter) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		if (ENT::isCollection($match_parameter)) {
 			$match_parameter = $match_parameter->getObjects();
 		}
@@ -251,6 +282,9 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	
 	public function map($callback) {
+		if (!$this->built) {
+			$this->build();
+		}
 		return array_map($callback, $this->objects);
 	}
 	
@@ -258,10 +292,17 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		return $this->includes($matches);
 	}
 	public function reverse() {
+		if (!$this->built) {
+			$this->build();
+		}
 		$this->objects = array_reverse($this->objects);
 	}
 	
 	public function slice($index, $length = null) {
+		if (!$this->built) {
+			$this->build();
+		}
+	
 		$result = array_slice($this->objects, $index, $length);
 		if ($length == 1) {
 			return $result[0];
@@ -296,9 +337,15 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 	
 	public function at($index) {
+		if (!$this->built) {
+			$this->build();
+		}
 		return $this->eq($index);
 	}
 	public function eq($index) {
+		if (!$this->built) {
+			$this->build();
+		}
 		return $this->objects[$index];
 	}
 	
@@ -318,15 +365,6 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 
  	public function fetch() {
 		if (!$this->dataset) {
-			/*
-			#$query = $this->query = $this->queryBuilder->getQuery();
-			#$result = $this->database->execute($query);
-			$this->getTotalCount();
-			
-			$this->result = $result;
-			$this->items = $this->database->resultToArray($result);
-			*/
-
 			$this->dataset = $this->queryBuilder->execute();
 		}
 		return $this->dataset;

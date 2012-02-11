@@ -85,7 +85,6 @@ class ENT_Config {
 			$this->directory = dirname($file);
 	
 			$this->config = $this->parse($json);
-			print_r($this->config);
 			$this->config->web->path = $this->config->web->path ? : $this->server_path;
 		
 			if ($environments = $json->environments) {

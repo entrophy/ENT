@@ -254,6 +254,11 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		} 		
 		return $response;
 	}
+	
+	public function map($callback) {
+		return array_map($callback, $this->objects);
+	}
+	
 	public function has($matches) {
 		return $this->includes($matches);
 	}

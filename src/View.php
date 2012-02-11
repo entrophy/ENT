@@ -17,30 +17,34 @@ class ENT_View extends ENT_Frontend {
 		}
 	}
 	public function render() {
-		$path = str_replace(array(ENT::registry('project_path'), "app/design/template/", ".phtml"), "", $this->template);
-		$this->currentPath = $path."/";
+		try {
+			$path = str_replace(array(ENT::registry('project_path'), "app/design/template/", ".phtml"), "", $this->template);
+			$this->currentPath = $path."/";
 	
-		ob_start();
+			ob_start();
 		
-		if ($this->template) {
-			include $this->template;
-		} else {
-			if (count($children = $this->getChildElements())) {
-				foreach ($children as $child) {
-					if (is_object($child)) {
-						$child->render();
+			if ($this->template) {
+				include $this->template;
+			} else {
+				if (count($children = $this->getChildElements())) {
+					foreach ($children as $child) {
+						if (is_object($child)) {
+							$child->render();
+						}
+						echo $child;
+						unset($child);
 					}
-					echo $child;
-					unset($child);
+					unset($children);
 				}
-				unset($children);
-			}
-		}		
+			}		
 	
-		$this->content = ob_get_contents();
-		ob_end_clean();
+			$this->content = ob_get_contents();
+			ob_end_clean();
 		
-		$this->rendered = true;
+			$this->rendered = true;
+		} catch (Exception $e) {
+			print_r($e);
+		}
 		return $this;
 	}
 	

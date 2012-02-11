@@ -63,38 +63,42 @@ class ENT_Config {
 		return $value;
 	}
 
-	public function load($file) {		
-		$json = json_decode(file_get_contents($file));
+	public function load($file) {
+		if (file_exists($file)) {
+			$json = json_decode(file_get_contents($file));
 
-		$this->config = $json;
-		$this->config->web->path = $this->config->web->path ? : $this->server_path;
+			$this->config = $json;
+			$this->config->web->path = $this->config->web->path ? : $this->server_path;
 		
-		if ($environments = $json->environments) {
-			foreach ($environments as $name => $environment) {
-				if (!$name) {$name = $environment->name;}
+			if ($environments = $json->environments) {
+				foreach ($environments as $name => $environment) {
+					if (!$name) {$name = $environment->name;}
 				
-				if (!($hosts = $environment->hosts) && $envinronment->host) {
-					$hosts = array($envinronment->host);			
-				}
+					if (!($hosts = $environment->hosts) && $envinronment->host) {
+						$hosts = array($envinronment->host);			
+					}
 				
-				$path = $environment->path ? : $this->server_path;
-				$type = $environment->type ? : 'production';
+					$path = $environment->path ? : $this->server_path;
+					$type = $environment->type ? : 'production';
 				
-				if ((!$hosts || $this->matchHost($hosts)) && (!$path || $this->matchPath($path))) {
-					$this->config->environment = (object)$this->environment = array(
-						'name' => $name,
-						'type' => $type,
-						'path' => $path,
-						'host' => $this->server_host
-					);
+					if ((!$hosts || $this->matchHost($hosts)) && (!$path || $this->matchPath($path))) {
+						$this->config->environment = (object)$this->environment = array(
+							'name' => $name,
+							'type' => $type,
+							'path' => $path,
+							'host' => $this->server_host
+						);
 					
-					unset($name, $environment, $hosts, $path, $type, $this->config->environments);
-					break;
+						unset($name, $environment, $hosts, $path, $type, $this->config->environments);
+						break;
+					}
 				}
+				unset ($environments);
 			}
-			unset ($environments);
+			unset($json, $file);
+		} else {
+			throw new ENT_Exception('Unable to load config file: '.$file.' (file doesn\'t exist)');
 		}
-		unset($json);
 	}
 		
 }

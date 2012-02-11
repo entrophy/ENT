@@ -8,10 +8,14 @@ class ENT_Router {
 		$this->load($file);
 	}
 	public function load($file) {
-		$json = json_decode(file_get_contents($file));
-		$this->_default = $json->default;
-		$this->routes = $json->routes;
-		$this->rewrites = $json->rewrites;
+		if (file_exists($file)) {
+			$json = json_decode(file_get_contents($file));
+			$this->_default = $json->default;
+			$this->routes = $json->routes;
+			$this->rewrites = $json->rewrites;
+		} else {
+			throw new ENT_Exception('Unable to load routes file: '.$file.' (file doesn\'t exist)');
+		}
 	}
 	
 	public function getDefault() {

@@ -30,6 +30,16 @@ class ENT_Module_ValueObject {
 		}
 		return $values;
 	}
+
+	public function difference($values) {
+		$values = $this->whitelist($values);
+		foreach ($values as $key => $value) {
+			if ($this->$key == $value) {
+				unset($values[$key]);
+			}
+		}
+		return $values;
+	}
 	
 	public function getValues() {
 		$values = get_object_vars($this);

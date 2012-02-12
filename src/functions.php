@@ -28,6 +28,14 @@ function object_array_call(array $array) {
 	}
 }
 
+function array_to_std_object($array) {
+	if (is_array($array)) {
+		return (object) array_map(array_to_std_object, $array);
+	}
+
+	return $array;
+}
+
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 {
   $merged = $array1;

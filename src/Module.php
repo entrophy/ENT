@@ -27,8 +27,12 @@ abstract class ENT_Module {
 	
 	public function save($values) {	
 		$values = $this->valueObject->whitelist($values);
-		$this->valueObject->load($values);
-		$id = $this->dao->save($this->getID(), $values);
+
+		if ($this->hasChanged($values)) {
+			$values = $this->valueObject->difference($values);
+			$this->valueObject->load($values);
+			$id = $this->dao->save($this->getID(), $values);
+		}
 		
 		if (!$this->getID()) {
 			$this->valueObject->id = $id;
@@ -51,6 +55,10 @@ abstract class ENT_Module {
 	
 	public function toJSON() {
 		return json_encode($this->toArray());
+	}
+
+	public function hasChanged($values) {
+		return count($this->valueObject->difference($values)) > 0;
 	}
 	
 	public function setAdditional($object) {

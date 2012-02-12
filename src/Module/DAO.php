@@ -32,7 +32,8 @@ class ENT_Module_DAO {
 					$_builder = $this->database->queryBuilder();
 					$_builder->setTable(static::$table);
 					$_builder->setData($keys[0]);
-					$_builder->addCondition($match);
+					print_r($match);
+					$_builder->setCondition($match);
 					$result = $_builder->execute();
 					
 					if (!$this->database->getRows($result)) {
@@ -41,7 +42,9 @@ class ENT_Module_DAO {
 					}
 				}
 			} else {
-				$qb->addCondition("id = $match");
+				$qb->setCondition(array(
+					'id' => $match
+				));
 				$id = $match;
 			}
 		} else {

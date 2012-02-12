@@ -326,6 +326,8 @@ class Entrophy_Database_QueryBuilder {
 		$this->params = $params ? : $this->params;
 		$this->type = $type ? : $this->type;
 
+		echo $this->query."\r\n\r\n";
+
 		$this->database->prepare($this->query);
 		$this->database->bind($this->params);
 		

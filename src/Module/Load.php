@@ -67,7 +67,7 @@ class ENT_Module_Load {
 			$additional = null;
 			
 			if (is_array($data[0]) || is_object($data[1]) || is_array($data[1])) {
-				$_data = array_shift($data);	
+				$_data = array_shift($data);
 				$additional = $data;
 				$data = $_data;
 			}

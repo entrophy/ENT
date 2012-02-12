@@ -50,6 +50,7 @@ class ENT_Module_Load {
 					$data = $data;
 					break;
 				case static::ID:
+					echo $data.":D";
 					$data = $dao->load(array('id' => $data));
 					break;
 				case static::MIXED:

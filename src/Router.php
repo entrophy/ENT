@@ -9,10 +9,14 @@ class ENT_Router {
 	}
 	public function load($file) {
 		if (file_exists($file)) {
-			$json = json_decode(file_get_contents($file));
-			$this->_default = $json->default;
-			$this->routes = $json->routes;
-			$this->rewrites = $json->rewrites;
+			if (($json = json_decode(file_get_contents($file))) !== NULL) {
+				$this->_default = $json->default;
+				$this->routes = $json->routes;
+				$this->rewrites = $json->rewrites ? : $json->rewrite;
+				unset($json);
+			} else {
+				throw new ENT_Exception('Malformed routes file: '.$file.' (json decoding failed)');
+			}
 		} else {
 			throw new ENT_Exception('Unable to load routes file: '.$file.' (file doesn\'t exist)');
 		}
@@ -25,7 +29,7 @@ class ENT_Router {
 	public function rewrite($path) {
 		$response = false;
 		
-		if (count($this->rewrites)) {			
+		if (count($this->rewrites)) {	
 			foreach ($this->rewrites as $match => $rewrite) {
 				if ($match === $path) {
 					$response = $rewrite;

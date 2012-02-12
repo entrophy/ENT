@@ -93,8 +93,10 @@ class ENT_Router {
 			"view" => $view, 
 			"template" => $template, 
 			"cache" => $cache,
-			"found" => (object) $this->find($traversable, array('layout', 'minify', 'view', 'template'))
+			"found" => (object) $this->find($traversable, array('layout', 'minify', 'view', 'template', 'default'))
 		);
+		
+		$this->_default = $response['found']->default ? : $this->_default;
 	
 		return (object) $response;
 	}

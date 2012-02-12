@@ -30,6 +30,10 @@ class ENT_Request {
 		}
 
 		$this->method = $_SERVER['REQUEST_METHOD'];
+		
+		if ($this->method == 'PUT') {
+			parse_str(file_get_contents('php://input'), $_POST);
+		}
 
 		if (count($_GET)) {
 			foreach ($_GET as $key => $value) {

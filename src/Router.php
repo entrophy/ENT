@@ -39,7 +39,8 @@ class ENT_Router {
 			if (is_object($value)) {
 				$values = array_merge($values, $this->flattenRewrites($value, ($prefix ? $prefix.'/'.$key : $key), $values));
 			} else {
-				$values[($key ? ($prefix.'/'.$key) : $prefix)] = $value;
+				if ($prefix) {$prefix .= '/';}
+				$values[($key ? ($prefix.$key) : $prefix)] = $value;
 			}
 		}
 

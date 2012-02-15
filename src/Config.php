@@ -86,6 +86,19 @@ class ENT_Config {
 	
 			$this->config = $this->parse($json);
 			$this->config->web->path = $this->config->web->path ? : $this->server_path;
+			
+			if ($this->config->database) {
+				if (!$this->config->database->master) {
+					$this->config->database = (object) array(
+						'master' => $this->config->database
+					);
+				}
+				if ($this->config->database->{'read-replicas'}) {
+					foreach ($this->config->database->{'read-replicas'} as $key => $data) {
+						$this->config->database->{'read-replicas'}[$key] = (object) array_merge((array) $this->config->database->master, (array) $data);
+					}
+				}
+			}
 		
 			if ($environments = $json->environments) {
 				foreach ($environments as $name => $environment) {

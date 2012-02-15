@@ -13,7 +13,15 @@ class ENT_App {
 	public function getDatabase() {
 		if (!$this->database) {
 			$this->database = Entrophy_Database::getInstance();
-			$this->database->init($this->getConfig()->getDatabase());
+			
+			$config = $this->getConfig()->getDatabase();
+			$master = $config->master ? : $config;
+			$read_replicas = $config->{'read-replicas'};
+			
+			$this->database->init(array(
+				'master' => $master,
+				'read-replicas' => $read_replicas
+			));
 		}
 		return $this->database;
 	}

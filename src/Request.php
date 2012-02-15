@@ -39,15 +39,20 @@ class ENT_Request {
 			foreach ($_GET as $key => $value) {
 				switch ($key) {
 					case 'path':
-						if ($init) {
-							$this->init($value);
-						}
+						$path = $value;
 						break;
 					default:
 						$this->params[$key] = $value;
 						break;
 				}
 			}
+		}
+		
+		if (!$path) {
+			$path = $this->getBaseUrl();
+		}
+		if ($init) {
+			$this->init($path);
 		}
 	}
 	

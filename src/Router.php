@@ -3,6 +3,7 @@ class ENT_Router {
 	private $_default;
 	private $routes;
 	private $rewrites;
+	private $rewrite_cache;
 	
 	public function __construct($file) {
 		$this->load($file);
@@ -12,7 +13,7 @@ class ENT_Router {
 			if (($json = json_decode(file_get_contents($file))) !== NULL) {
 				$this->_default = $json->default;
 				$this->routes = $json->routes;
-				$this->rewrites = $json->rewrites ? : $json->rewrite;
+				$this->rewrites = (object)$this->flattenRewrites($json->rewrites ? : $json->rewrite);
 				unset($json);
 			} else {
 				throw new ENT_Exception('Malformed routes file: '.$file.' (json decoding failed)');
@@ -26,29 +27,48 @@ class ENT_Router {
 		return $this->_default;
 	}
 	
-	public function rewrite($path) {
-		$response = false;
+	public function flattenRewrites($item, $prefix = '', $values = null) {
+		if (!$values) {
+			$values = array();
+		}
+		$item = (array)$item;
 		
-		if (count($this->rewrites)) {	
-			foreach ($this->rewrites as $match => $rewrite) {
-				if ($match === $path) {
-					$response = $rewrite;
-				} else {			
-					if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {
-						$tags = $tags[1];
-						$regex = '^'.preg_replace('/\:(.+?)(?:\/|$)/ism', '([^\/]+?)(?:\/|$)', str_replace('\:', ':', preg_quote($match, '/'))).'$';
+		foreach ($item as $key => $value) {
+			if ($key == '_empty_') {$key = '';}
+			
+			if (is_object($value)) {
+				$values = array_merge($values, $this->flattenRewrites($value, ($prefix ? $prefix.'/'.$key : $key), $values));
+			} else {
+				$values[($key ? ($prefix.'/'.$key) : $prefix)] = $value;
+			}
+		}
+
+		return $values;
+	}
+	public function rewrite($path) {		
+		if ($this->rewrite_cache[$path] === null) {
+			$response = false;
+			if (count($this->rewrites)) {	
+				foreach ($this->rewrites as $match => $rewrite) {
+					if ($match === $path) {
+						$response = $rewrite;
+					} else {			
+						if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {
+							$tags = $tags[1];
+							$regex = '^'.preg_replace('/\:(.+?)(?:\/|$)/ism', '([^\/]+?)(?:\/|$)', str_replace('\:', ':', preg_quote($match, '/'))).'$';
 					
-						if (preg_match('/'.$regex.'/ism', $path, $matches) !== 0) {
-							$values = array_slice($matches, 1);
-							$response = $rewrite;
-							$matched = $regex;
+							if (preg_match('/'.$regex.'/ism', $path, $matches) !== 0) {
+								$values = array_slice($matches, 1);
+								$response = $rewrite;
+								$matched = $regex;
 						
-							if (count($tags)) {
-								foreach ($tags as $index => $tag) {
-									if (strpos($response, ':'.$tag) === false) {
-										$response .= '/'.$tag.'/'.$values[$index];
-									} else {
-										$response = str_replace(':'.$tag, $values[$index], $response);
+								if (count($tags)) {
+									foreach ($tags as $index => $tag) {
+										if (strpos($response, ':'.$tag) === false) {
+											$response .= '/'.$tag.'/'.$values[$index];
+										} else {
+											$response = str_replace(':'.$tag, $values[$index], $response);
+										}
 									}
 								}
 							}
@@ -56,9 +76,11 @@ class ENT_Router {
 					}
 				}
 			}
+			
+			$this->rewrite_cache[$path] = $response;
 		}
 
-		return $response;
+		return $this->rewrite_cache[$path];
 	}
 	
 	public function match($request) {

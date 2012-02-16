@@ -46,7 +46,6 @@ final class ENT_Controller_Front {
 		Entrophy_Profiler::startStep('root');
 		$request = $_request ? : $this->request;
 
-		print_r($request);
 		$request_cache = new ENT_Request_Cache($request);
 		
 		$match = $this->router->match($request);

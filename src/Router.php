@@ -34,8 +34,6 @@ class ENT_Router {
 		$item = (array)$item;
 		
 		foreach ($item as $key => $value) {
-			if ($key == '_empty_') {$key = '';}
-			
 			if (is_object($value)) {
 				$values = array_merge($values, $this->flattenRewrites($value, ($prefix ? $prefix.'/'.$key : $key), $values));
 			} else {
@@ -50,10 +48,14 @@ class ENT_Router {
 		if ($this->rewrite_cache[$path] === null) {
 			$response = false;
 			if (count($this->rewrites)) {	
+				if ($path == '') { $path = '_empty_'; }
+				
 				echo $path;
 				print_r($this->rewrites);
+
+
 				foreach ($this->rewrites as $match => $rewrite) {
-					if ($match === $path) {
+					if ($match == $path) {
 						$response = $rewrite;
 					} else {			
 						if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {

@@ -9,6 +9,7 @@ class ENT_Request {
 	private $full = false;
 	private $debug = array();
 	private $method;
+	private $url;
 	
 	public function addDebug($value) {
 		array_push($this->debug, $value);
@@ -51,6 +52,7 @@ class ENT_Request {
 		if (!$path) {
 			$path = $this->getBaseUrl();
 		}
+		
 		if ($init) {
 			$this->init($path);
 		}
@@ -96,7 +98,17 @@ class ENT_Request {
 	}
 	
 	public function getUrl() {
-		return str_replace(ENT::getWebBasePath(), "", $_SERVER['REQUEST_URI']);
+		if (!$this->url) {
+			$web_base_path = ENT::getWebBasePath();
+			$request_uri = $_SERVER['REQUEST_URI'];
+
+			if (!isset($web_base_path[1]) && $web_base_path[0] === '/') {
+				$this->url = substr($request_uri, 1);
+			} else {
+				$this->url = str_replace($web_base_paht, '', $request_uri);
+			}
+		}
+		return $this->url;
 	}
 	public function getBaseUrl() {
 		$url = array_slice(explode("?", $this->getUrl()), 0, 1);

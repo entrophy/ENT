@@ -59,7 +59,6 @@ class ENT_Request {
 	}
 	
 	public function init($path, $request = null) {
-		echo $path;
 		$this->addDebug('init: '.$path);
 	
 		$this->path = $path;

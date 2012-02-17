@@ -49,10 +49,6 @@ class ENT_Router {
 			$response = false;
 			if (count($this->rewrites)) {	
 				if ($path == '') { $path = '_empty_'; }
-				
-				echo $path;
-				print_r($this->rewrites);
-
 
 				foreach ($this->rewrites as $match => $rewrite) {
 					if ($match == $path) {
@@ -89,6 +85,7 @@ class ENT_Router {
 	}
 	
 	public function match($request) {
+		echo $request->getPath();
 		if ($request->getPath() != $this->_default) {
 			if ($rewrite = $this->rewrite($request->getBaseUrl())) {
 				$request->addDebug('router-rw from: /'.$request->getBaseUrl().' to: '.$rewrite);

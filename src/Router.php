@@ -88,8 +88,8 @@ class ENT_Router {
 		echo $request->getPath();
 		print_r($request);
 		if ($request->getPath() != $this->_default) {
-			if ($rewrite = $this->rewrite($request->getBaseUrl())) {
-				$request->addDebug('router-rw from: /'.$request->getBaseUrl().' to: '.$rewrite);
+			if ($rewrite = $this->rewrite($request->getPath())) {
+				$request->addDebug('router-rw from: /'.$request->getPath().' to: '.$rewrite);
 				$request->init($rewrite);
 			}
 

@@ -50,6 +50,8 @@ class ENT_Router {
 		if ($this->rewrite_cache[$path] === null) {
 			$response = false;
 			if (count($this->rewrites)) {	
+				echo $path;
+				print_r($this->rewrites);
 				foreach ($this->rewrites as $match => $rewrite) {
 					if ($match === $path) {
 						$response = $rewrite;

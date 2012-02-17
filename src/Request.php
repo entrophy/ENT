@@ -105,7 +105,7 @@ class ENT_Request {
 			if (!isset($web_base_path[1]) && $web_base_path[0] === '/') {
 				$this->url = substr($request_uri, 1);
 			} else {
-				$this->url = str_replace($web_base_paht, '', $request_uri);
+				$this->url = str_replace($web_base_path, '', $request_uri);
 			}
 		}
 		return $this->url;

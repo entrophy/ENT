@@ -2,19 +2,35 @@
 class ENT_Response {
 	private $type = 'html';
 	private $content;
+	private $status = 200;
+	private $statuses = array(
+		200 => 'OK',
+		404 => 'Not Found'
+	);
 
 	public function setType($type) {
 		$this->type = $type;
+		return $this;
 	}
 	public function setContent($content) {
 		$this->content = $content;
+		return $this;
 	}
 	public function getType() {
 		return $this->type;
 	}
 	
+	public function setStatus($status) {
+		$this->status = $status;
+		return $this;
+	}
+	public function getStatus() {
+		return $this->status;
+	}
+	
 	public function setSession($key, $value) {
 		$_SESSION[$key] = $value;
+		return $this;
 	}
 	public function unsetSession($key) {
 		$_SESSION[$key] = null;
@@ -23,13 +39,16 @@ class ENT_Response {
 	public function setCookie($key, $value, $expire, $path = '/') {
 		$expire = time() + $expire;
 		setcookie($key, $value, $expire, $path);
+		return $this;
 	}
 	public function deleteCookie($key) {
 		$this->unsetCookie($key);
+		return $this;
 	}
 	public function unsetCookie($key, $path = '/') {
 		$expire = time() - 60 * 60;
 		setcookie($key, null, $expire, $path);
+		return $this;
 	}	
 	
 	public function getContent() {
@@ -66,6 +85,10 @@ class ENT_Response {
 				break;
 		}
 		
+		if ($this->status != 200) {
+			header('HTTP/1.1 '.($this->statuses[$this->status] ? $this->status.' '.$this->statuses[$this->status] : $this->status));
+		}
+		
 		if ($this->content) {
 			$content = $this->content;
 			
@@ -87,6 +110,8 @@ class ENT_Response {
 			
 			echo trim($content);
 		}
+		
+		return $this;
 	}
 }
 ?>

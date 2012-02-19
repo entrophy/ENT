@@ -102,8 +102,8 @@ class ENT_Router {
 		$action = $request->getAction();
 		$method = $request->getMethod();
 		
-		$view = $path = $template = implode("/", array($section, $controller_name, $action));;
-		$full = implode("/", array($section, $controller, $action));
+		$view = $path = $template = implode("/", array_filter(array($section, $controller_name, $action)));
+		$full = implode("/", array_filter(array($section, $controller, $action)));
 		$traversable = str_replace("_", "/", $full);
 		
 		$response = array(
@@ -118,7 +118,7 @@ class ENT_Router {
 			"cache" => $cache,
 			"found" => (object) $this->find($traversable, array('layout', 'minify', 'view', 'template', 'default'))
 		);
-		
+
 		$this->_default = $response['found']->default ? : $this->_default;
 	
 		return (object) $response;

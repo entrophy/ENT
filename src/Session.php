@@ -1,5 +1,5 @@
 <?php
-ENT_Session {
+class ENT_Session {
 	private static $handler = null;
 	private static $started = false;
 	private static $namespaces = array();

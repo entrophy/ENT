@@ -96,7 +96,6 @@ class Entrophy_Database {
 		return $this->queryBuilder();
 	}
 	public function crud() {
-		return new Entrophy_Database_CRUD($this); 
 		return Entrophy_Database_CRUD::getInstance();
 	}
 	

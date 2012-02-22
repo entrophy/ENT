@@ -27,7 +27,6 @@ class Entrophy_Database {
 	}
 	
 	public static function autoload($class) {
-		echo $class."\n";
 		if (strpos($class, 'Entrophy_Database_') === 0) {
 			if (class_exists($class, false) || interface_exists($class, false)) {
 				return;
@@ -164,7 +163,6 @@ class Entrophy_Database {
 	
 	public function prepare($query, $type = null) {
 		$type = $type ? $this->getType($type) : $this->getType($query);
-
 		$this->statement = $this->{$type}->prepare($query);	
 		$this->lastQuery = $query;
 		return $this;

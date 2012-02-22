@@ -11,10 +11,10 @@ class ENT_Session {
 	}
 	
 	public static function getNamespace($namespace) {
-		if (!$this->namespaces[$namespace]) {
-			$this->namespaces[$namespace] = new ENT_Session_Namespace($namespace);
+		if (!self::$namespaces[$namespace]) {
+			self::$namespaces[$namespace] = new ENT_Session_Namespace($namespace);
 		}	
-		return $this->namespaces[$namespace];
+		return self::$namespaces[$namespace];
 	}
 	
 	public static function setHandler($handler) {

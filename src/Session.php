@@ -19,13 +19,29 @@ class ENT_Session {
 	
 	public static function setHandler($handler) {
 		self::$handler = $handler;
+		session_set_save_handler(
+			array($handler, 'open'), 
+			array($handler, 'close'), 
+			array($handler, 'read'), 
+			array($handler, 'write'), 
+			array($handler, 'destroy'), 
+			array($handler, 'gc')
+		);
 	}
 	
 	public static function set($name, $value, $namespace = null) {
 		if ($namespace) {
-			$_SESSION[$namespace][$name] = $value;
+			if ($value === null) {
+				unset($_SESSION[$namespace][$name]);
+			} else {
+				$_SESSION[$namespace][$name] = $value;
+			}
 		} else {
-			$_SESSION[$name] = $value;
+			if ($value === null) {
+				unset($_SESSION[$name]);
+			} else {
+				$_SESSION[$name] = $value;
+			}
 		}
 	}
 	

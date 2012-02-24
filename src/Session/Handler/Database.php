@@ -62,6 +62,7 @@ class ENT_Session_Handler_Database {
 			'lifetime' => $this->lifetime
 		));
 		$qb->execute();
+		$this->gc();
 		return true;
 	}
 
@@ -81,7 +82,6 @@ class ENT_Session_Handler_Database {
 		$qb = $this->database->queryBuilder();
 		$qb->type('delete');
 		$qb->table($this->config->table);
-		$qb->fields(array($this->config->columns->data));
 		$qb->setCondition('`modified` + `lifetime` < :time')->bindParam('time', $time);
 		$result = $qb->execute();
 		return true;

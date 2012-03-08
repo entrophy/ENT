@@ -34,6 +34,16 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 		$this->queryBuilder->setOrder($name, $dir, $name);
 		return $this;
 	}
+
+	public function addSort($name, $dir = 'ASC') {
+		$this->queryBuilder->addOrder($name, $dir, $name);
+		return $this;
+	}
+
+	public function removeSort($name = null) {
+		$this->queryBuilder->removeOrder($name);
+		return $this;
+	}
 	
 	public function setAmount($amount) {
 		$this->queryBuilder->setLimit($amount);

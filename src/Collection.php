@@ -31,7 +31,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	}
 
 	public function setSort($name, $dir = 'ASC') {
-		$this->queryBuilder->addOrder($name, $dir, $name);
+		$this->queryBuilder->setOrder($name, $dir, $name);
 		return $this;
 	}
 	

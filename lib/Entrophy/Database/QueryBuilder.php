@@ -102,6 +102,12 @@ class Entrophy_Database_QueryBuilder {
 		return $this;
 	}
 
+	public function setOrder($name, $dir = 'asc', $key = null) {
+		$this->removeOrder();
+		$this->addOrder($name, $dir, $key);
+
+		return $this;
+	}
 	public function addOrder($name, $dir = 'asc', $key = null) {	
 		$order = (object) array('name' => $name, 'dir' => $dir);
 		if ($key) {
@@ -112,9 +118,13 @@ class Entrophy_Database_QueryBuilder {
 		unset($order);
 		return $this;
 	}
-	public function removeOrder($key) {
-		$this->orders[$key] = null;
-		unset($this->orders[$key]);
+	public function removeOrder($key = null) {
+		if ($key) {
+			$this->orders[$key] = null;
+			unset($this->orders[$key]);
+		} else {
+			$this->orders = array();
+		}
 		return $this;
 	}
 	public function order() {

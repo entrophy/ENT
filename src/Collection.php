@@ -89,13 +89,13 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 				$max = "'".$max."'";
 			}
 			
-			$this->queryBuilder->addCondition("`{$name}` >= $min AND `{$name}` <= $max");
+			$this->queryBuilder->setCondition("`{$name}` >= $min AND `{$name}` <= $max");
 		} else {	
 			$comparator = $param;
 			if (!is_numeric($value) || (!$value && $value !== 0)) {
 				$value = "'".$value."'";
 			}
-			$this->queryBuilder->addCondition("`{$name}` $comparator $value");
+			$this->queryBuilder->setCondition("`{$name}` $comparator $value");
 		}
 	}
 	

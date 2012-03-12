@@ -3,6 +3,7 @@ abstract class ENT_Module {
 	public static $version = '2.0';
 
 	protected $dao;
+	protected $previous;
 	protected $valueObject;
 	protected $id;
 	protected $reload_on_save = false;
@@ -28,20 +29,22 @@ abstract class ENT_Module {
 	public function save($values) {	
 		$values = $this->valueObject->whitelist($values);
 
-		if ($this->hasChanged($values)) {
+		if ($this->isDifferent($values)) {
+			$this->previous = $this->valueObject->copy();
+		
 			$values = $this->valueObject->difference($values);
 			$this->valueObject->load($values);
 			$id = $this->dao->save($this->getID(), $values);
-		}
+			
+			if (!$this->getID()) {
+				$this->valueObject->id = $id;
+				$this->id = $id;
+			}
 		
-		if (!$this->getID()) {
-			$this->valueObject->id = $id;
-			$this->id = $id;
-		}
-		
-		if ($this->reload_on_save) {
-			$load_class = $class = get_class($this).'_Load';
-			$this->infuse($load_class::factory($id, $load_class::ID, false));
+			if ($this->reload_on_save) {
+				$load_class = $class = get_class($this).'_Load';
+				$this->infuse($load_class::factory($id, $load_class::ID, false));
+			}
 		}
 	}
 	
@@ -56,8 +59,18 @@ abstract class ENT_Module {
 	public function toJSON() {
 		return json_encode($this->toArray());
 	}
+	
+	public function getPrevious($key) {
+		return $this->previous && $this->previous->$key ? $this->previous->$key : false;
+	}
+	public function hasChanged($key) {
+		if ($this->previous && $this->previous->$key != $this->valueObject->$key) {
+			return true;
+		}
+		return false;
+	}
 
-	public function hasChanged($values) {
+	public function isDifferent($values) {
 		return count($this->valueObject->difference($values)) > 0;
 	}
 	

@@ -41,6 +41,12 @@ class ENT_Module_ValueObject {
 		return $values;
 	}
 	
+	public function copy() {
+		$copy = new $this;
+		$copy->load($this->getValues());
+		return $copy;
+	}
+	
 	public function getValues() {
 		$values = get_object_vars($this);
 		return $values;

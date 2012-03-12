@@ -43,5 +43,16 @@ abstract class ENT_Controller_Abstract {
 	public function getResponse() {
 		return $this->response;
 	}
+	
+	public function getController($path) {
+		if ($controller = ENT::getController($path)) {
+			$controller->setFrontController($this->frontController)
+						  ->setRequest($this->request)
+						  ->setResponse($this->response)
+						  ->init();
+			return $controller;
+		}
+		return false;
+	}
 }
 ?>

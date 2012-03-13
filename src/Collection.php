@@ -396,6 +396,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 				$dataset = $this->fetch();
 			}
 
+			$this->objects = array();
 			if (count($dataset)) {
 				$object_static = ENT::getStatic(static::$module_key);
 				$object_load = $object_static.'_Load';

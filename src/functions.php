@@ -36,6 +36,15 @@ function array_to_std_object($array) {
 	return $array;
 }
 
+function is_nested_array($array) {
+	foreach ($array as $item) {
+		if (!is_array($item)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 {
   $merged = $array1;

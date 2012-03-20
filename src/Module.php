@@ -29,9 +29,9 @@ abstract class ENT_Module {
 	public function save($values) {	
 		$values = $this->valueObject->whitelist($values);
 
-		if ($this->isDifferent($values)) {
+		if ($this->isDifferent($values) || !$this->exists) {
 			$this->previous = $this->valueObject->copy();
-		
+
 			$values = $this->valueObject->difference($values);
 			$this->valueObject->load($values);
 			$id = $this->dao->save($this->getID(), $values);

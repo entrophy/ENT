@@ -34,7 +34,7 @@ class ENT_Module_ValueObject {
 	public function difference($values) {
 		$values = $this->whitelist($values);
 		foreach ($values as $key => $value) {
-			if ($this->$key == $value) {
+			if ($this->$key === $value) {
 				unset($values[$key]);
 			}
 		}

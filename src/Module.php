@@ -39,6 +39,8 @@ abstract class ENT_Module {
 			if (!$this->getID()) {
 				$this->valueObject->id = $id;
 				$this->id = $id;
+
+				$this->exists = true;
 			}
 		
 			if ($this->reload_on_save) {

@@ -52,6 +52,7 @@ abstract class ENT_Collection implements IteratorAggregate, Countable {
 	
 	public function setOffset($offset) {
 		$this->queryBuilder->setOffset($offset);
+		return $this;
 	}
 	
 	public function getTotalCount() {

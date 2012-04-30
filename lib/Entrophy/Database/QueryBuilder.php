@@ -300,7 +300,7 @@ class Entrophy_Database_QueryBuilder {
 
 		if (is_array($orders = $this->orders) && count($orders)) {
 			$query_parts[] = 'ORDER BY';
-			
+
 			$query_parts[] = implode(', ', array_map(function ($order) use ($db) {
 				return $db->field($order->name).' '.strtoupper($order->dir);
 			}, $orders));

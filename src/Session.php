@@ -7,6 +7,7 @@ class ENT_Session {
 		if (!self::$started) {
 			session_start();
 			self::$started = true;
+			register_shutdown_function('session_write_close');
 		}
 	}
 	

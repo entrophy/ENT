@@ -53,6 +53,7 @@ class ENT_Router {
 				foreach ($this->rewrites as $match => $rewrite) {
 					if ($match == $path) {
 						$response = $rewrite;
+						break;
 					} else {			
 						if (preg_match_all('/\:(.+?)(?:\/|$)/ism', $match, $tags) !== 0) {
 							$tags = $tags[1];
@@ -72,6 +73,15 @@ class ENT_Router {
 										}
 									}
 								}
+								break;
+							}
+						}
+						
+						if (strpos($match, '*') !== false) {
+							$regex = '^'.str_replace("\*", '(.+)', preg_quote($match, '/')).'$';
+							if (preg_match('/'.$regex.'/ism', $path, $matches) !== 0) {
+								$response = $rewrite;
+								break;
 							}
 						}
 					}

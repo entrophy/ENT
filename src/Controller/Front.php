@@ -118,19 +118,19 @@ final class ENT_Controller_Front {
 					if ($content) {
 						$this->response->setContent($content);
 					}
-				} 
-
-				$controller->_afterAction();
+					
+					$controller->_afterAction();
 				
-				// Root stop
-				Entrophy_Profiler::stopStep();
-				if (ENT::getEnvironment() && ENT::getEnvironment()->getType() == 'development') {
-					$this->response->setContent(str_replace("{{rad-profiler}}", Entrophy_Profiler::getHtmlContent(), $this->response->getContent()));
-				} else {
-					$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
-				}
+					// Root stop
+					Entrophy_Profiler::stopStep();
+					if (ENT::getEnvironment() && ENT::getEnvironment()->getType() == 'development') {
+						$this->response->setContent(str_replace("{{rad-profiler}}", Entrophy_Profiler::getHtmlContent(), $this->response->getContent()));
+					} else {
+						$this->response->setContent(str_replace("{{rad-profiler}}", "", $this->response->getContent()));
+					}
 			
-				$this->response->send();
+					$this->response->send();
+				}
 			}
 		} else {
 			if ($this->router->getDefault() && $this->router->getDefault() != $request->getPath()) {

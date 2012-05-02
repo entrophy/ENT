@@ -151,7 +151,7 @@ class ENT_Router {
 			$end = false;
 		}
 		
-		if ($context = $context->$target) {
+		if ($target && $context = $context->$target) {
 			$values = array();
 			foreach ($items as $item) {
 				$values[$item] = $context->$item;

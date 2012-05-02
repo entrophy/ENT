@@ -91,16 +91,16 @@ final class ENT_Controller_Front {
 					$controller->$action();
 				Entrophy_Profiler::stopStep();
 				
-				Entrophy_Profiler::startStep('processLayout');
-					$this->processLayout($match);
-				Entrophy_Profiler::stopStep();
-			
-				if ($this->layout) {
-					$controller->setLayoutObject($this->layout);
-					$controller->_afterTemplateAction();
-				}
-	
 				if ((!$this->redirect && !$_request) || ($this->redirect && $_request)) {	
+					Entrophy_Profiler::startStep('processLayout');
+						$this->processLayout($match);
+					Entrophy_Profiler::stopStep();
+			
+					if ($this->layout) {
+						$controller->setLayoutObject($this->layout);
+						$controller->_afterTemplateAction();
+					}
+				
 					Entrophy_Profiler::startStep('renderView');
 						$content = $this->processView($match);
 					Entrophy_Profiler::stopStep();
